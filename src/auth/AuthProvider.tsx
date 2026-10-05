@@ -3,7 +3,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { isConfigured, supabase } from '../api/supabase'
 import { AuthContext, type AuthState } from './AuthContext'
-import { clearCachedProfile } from './profileCache'
+import { clearCachedProfile, clearDeviceCaches } from './profileCache'
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient()
@@ -20,6 +20,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // Nothing of the previous user may stay in memory or on disk.
         queryClient.clear()
         clearCachedProfile()
+        clearDeviceCaches()
       }
     })
     return () => data.subscription.unsubscribe()

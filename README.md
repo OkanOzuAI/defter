@@ -4,8 +4,8 @@ Multi-user workout, nutrition and cardio tracker. Vite + React + TypeScript on V
 Supabase (Free) for accounts and Postgres. Your data lives in Supabase, so logging in from any
 device brings your whole archive with you.
 
-Status: phases 1–4 of 12 are built (scaffold, TR/EN, database schema, accounts, onboarding,
-exercise library, calculations, workout logging with offline draft and sync queue).
+Status: phases 1–5 of 12 are built (scaffold, TR/EN, database schema, accounts, onboarding,
+exercise library, calculations, workout logging with offline draft and sync queue, saved workouts and weekly plan).
 This README is completed in phase 12.
 
 ## Local setup
@@ -71,3 +71,12 @@ npm run dev                  # http://localhost:5173
   "Tamamlanmadı / Not finished" rather than being hidden.
 - **Supersets**: the rest timer starts after the last exercise of the group, not after each one.
 - **Bar weights**: barbell 20 kg, EZ bar 10, trap bar 25, safety bar 30, Smith 0 (not logged).
+- **Saving a session as a saved workout links it**: the session becomes the first run of the new
+  template, so the next start is prefilled from it and later runs are compared with it.
+- **Starting from a saved workout**: the template decides exercises and set layout; values come
+  from the most recent session done from it, set by set, falling back to the template's own.
+  A one-off swap therefore does not stick unless "Şablona kaydet" was ticked.
+- **PRs**: an exercise with no earlier history reports no records (nothing to beat). Reps records
+  are only reported at a weight that was used before.
+- **Saved workouts are cached on the device** so one can be started without signal; the copy is
+  removed on logout. The workout draft and the unsent queue are kept on logout on purpose.

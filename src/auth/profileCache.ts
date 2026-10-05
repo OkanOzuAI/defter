@@ -39,3 +39,20 @@ export function clearCachedProfile() {
     // nothing to clear
   }
 }
+
+/**
+ * Read-only copies kept for offline use (saved workouts, last sets). Removed on logout.
+ * The workout draft and the unsent queue are deliberately kept: they may hold sets
+ * that have not reached the server yet.
+ */
+export function clearDeviceCaches() {
+  try {
+    for (const key of Object.keys(localStorage)) {
+      if (key.startsWith('defter.cache.') || key.startsWith('defter.lastsets.')) {
+        localStorage.removeItem(key)
+      }
+    }
+  } catch {
+    // nothing to clear
+  }
+}

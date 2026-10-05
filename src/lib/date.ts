@@ -114,3 +114,11 @@ export function formatDate(
     new Date(toUtc(date)),
   )
 }
+
+/** Weekday names in the active language, Monday first. */
+export function weekdayNames(lang: Lang, format: 'short' | 'long' = 'short'): string[] {
+  const monday = '2026-10-05'
+  return Array.from({ length: 7 }, (_, i) =>
+    formatDate(addDays(monday, i), lang, { weekday: format }),
+  )
+}

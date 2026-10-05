@@ -104,6 +104,7 @@ export async function flush(userId: string): Promise<boolean> {
   if (count(sent) === 0) return false
 
   flushing = true
+  let again = false
   try {
     // Sessions first: sets reference them.
     await upsertSessions(Object.values(sent.sessions))
@@ -115,7 +116,7 @@ export async function flush(userId: string): Promise<boolean> {
     // Keep whatever changed while the request was in flight.
     const now = read(userId)
     const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b)
-    write(userId, {
+    const left: Outbox = {
       sessions: Object.fromEntries(
         Object.entries(now.sessions).filter(([id, row]) => !same(row, sent.sessions[id])),
       ),
@@ -124,8 +125,11 @@ export async function flush(userId: string): Promise<boolean> {
       ),
       deletedSets: now.deletedSets.filter((id) => !sent.deletedSets.includes(id)),
       deletedSessions: now.deletedSessions.filter((id) => !sent.deletedSessions.includes(id)),
-    })
-    flushListeners.forEach((fn) => fn())
+    }
+    write(userId, left)
+    again = count(left) > 0
+    // Lists are refreshed only once the server has everything, never from a half-sent state.
+    if (!again) flushListeners.forEach((fn) => fn())
     return true
   } catch (error) {
     // Offline or server trouble: everything stays queued for the next attempt.
@@ -135,6 +139,8 @@ export async function flush(userId: string): Promise<boolean> {
     return false
   } finally {
     flushing = false
+    // Something was queued while this request was in flight: send it right away.
+    if (again) void flush(userId)
   }
 }
 

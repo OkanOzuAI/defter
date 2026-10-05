@@ -2,30 +2,27 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useCallback, useState } from 'react'
 import { Navigate } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
-import { useProfile } from '../auth/useProfile'
-import { Button, Message } from '../components/ui'
+import { Button } from '../components/ui'
 import { useT } from '../i18n'
 import { isDateStr } from '../lib/date'
-import { addExercise, toSessionRow, toSetRows } from '../workout/draft'
+import { toSessionRow, toSetRows } from '../workout/draft'
 import { discardDraft, finishDraft, updateDraft, useDraft } from '../workout/draftStore'
-import { ExerciseCard } from '../workout/ExerciseCard'
-import { ExercisePicker } from '../workout/ExercisePicker'
-import { resolveExercise } from '../workout/exercises'
-import { Glossary } from '../workout/Glossary'
+import { ExerciseList } from '../workout/ExerciseList'
 import { useBodyweight, useLastSets, useNow, useWakeLock, workoutKey } from '../workout/hooks'
 import { RestTimerBar } from '../workout/RestTimerBar'
 import { SyncBadge } from '../workout/SyncBadge'
+import { swapInTemplate } from '../workout/templates'
 import type { Draft, RestState } from '../workout/types'
+import { useSaveTemplate, useTemplates } from '../workout/useTemplates'
 
 export function ActiveWorkoutPage() {
   const t = useT()
   const queryClient = useQueryClient()
   const { user } = useAuth()
   const userId = user?.id
-  const { data: profile } = useProfile()
   const draft = useDraft(userId)
-  const [picking, setPicking] = useState(false)
-  const [glossary, setGlossary] = useState(false)
+  const templates = useTemplates(userId)
+  const saveTemplate = useSaveTemplate(userId)
   // Where to go once the draft is gone; set in the same tick as finishing or discarding it.
   const [exitTo, setExitTo] = useState<string | null>(null)
 
@@ -51,8 +48,8 @@ export function ActiveWorkoutPage() {
   if (exitTo) return <Navigate to={exitTo} replace />
   if (!userId || !draft) return <Navigate to="/workout" replace />
 
-  const display = profile?.intensity_display ?? 'rir'
   const minutes = Math.max(0, Math.floor((now - Date.parse(draft.started_at)) / 60_000))
+  const template = templates.data?.find((item) => item.id === draft.template_id)
 
   function finish() {
     const finished = finishDraft(userId!)
@@ -103,32 +100,24 @@ export function ActiveWorkoutPage() {
         )}
       </div>
 
-      {draft.exercises.length === 0 && <Message title={t('workout.noExercises')} />}
-
-      {draft.exercises.map((item) => {
-        const exercise = resolveExercise(item.exercise_id)
-        const restSec = exercise.isCompound
-          ? (profile?.rest_compound_sec ?? exercise.restSec)
-          : (profile?.rest_isolation_sec ?? exercise.restSec)
-        return (
-          <ExerciseCard
-            key={item.key}
-            draft={draft}
-            item={item}
-            exercise={exercise}
-            lastSets={lastSets[item.exercise_id] ?? []}
-            bodyweight={bodyweight}
-            display={display}
-            restSec={draft.editing ? 0 : restSec}
-            apply={apply}
-            onGlossary={() => setGlossary(true)}
-          />
-        )
-      })}
-
-      <Button variant="secondary" block onClick={() => setPicking(true)}>
-        + {t('workout.addExercise')}
-      </Button>
+      <ExerciseList
+        draft={draft}
+        apply={apply}
+        lastSets={lastSets}
+        bodyweight={bodyweight}
+        onSwapInTemplate={
+          template && !draft.editing
+            ? (index, exerciseId, unilateral) =>
+                saveTemplate.mutate(
+                  {
+                    ...template,
+                    items: swapInTemplate(template.items, index, exerciseId, unilateral),
+                  },
+                  { onError: () => window.alert(t('common.error')) },
+                )
+            : undefined
+        }
+      />
 
       <div className="space-y-2 pt-3">
         <Button block onClick={finish}>
@@ -140,18 +129,6 @@ export function ActiveWorkoutPage() {
       </div>
 
       {draft.rest && <RestTimerBar rest={draft.rest} onChange={setRest} />}
-
-      {picking && (
-        <ExercisePicker
-          title={t('ex.pickTitle')}
-          onClose={() => setPicking(false)}
-          onPick={(exercise) => {
-            apply((d) => addExercise(d, exercise.id, exercise.unilateral))
-            setPicking(false)
-          }}
-        />
-      )}
-      {glossary && <Glossary onClose={() => setGlossary(false)} />}
     </div>
   )
 }

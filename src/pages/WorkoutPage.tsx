@@ -52,11 +52,26 @@ export function WorkoutPage() {
       ) : (
         <Card>
           <h2 className="mb-3 font-medium">{t('workout.start')}</h2>
-          <Button block onClick={startEmpty}>
-            {t('workout.startEmpty')}
-          </Button>
+          <div className="space-y-2">
+            <Button block onClick={() => navigate('/workout/templates')}>
+              {t('tpl.startFrom')}
+            </Button>
+            <Button variant="secondary" block onClick={startEmpty}>
+              {t('workout.startEmpty')}
+            </Button>
+          </div>
         </Card>
       )}
+
+      <Link
+        to="/workout/templates"
+        className="flex min-h-12 items-center justify-between rounded-xl border border-border bg-surface px-4"
+      >
+        <span className="font-medium">{t('tpl.title')}</span>
+        <span className="text-muted" aria-hidden="true">
+          ›
+        </span>
+      </Link>
 
       <section>
         <h2 className="mb-1 font-medium">{t('workout.history')}</h2>

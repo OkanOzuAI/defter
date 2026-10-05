@@ -16,6 +16,8 @@ type Props = {
   lastBest?: number
   bodyweight?: number
   display: IntensityDisplay
+  /** Editing a saved workout: rows hold stored values, there is nothing to complete. */
+  planning?: boolean
   onChange: (fn: (set: DraftSet) => DraftSet) => void
   onDone: () => void
   onRemove: () => void
@@ -32,7 +34,7 @@ const chip = (active: boolean) =>
   (active ? 'border-accent bg-accent text-accent-fg' : 'border-border text-muted')
 
 export function SetRowEditor(props: Props) {
-  const { set, exercise, placeholder, lastBest, bodyweight, display, onChange } = props
+  const { set, exercise, placeholder, lastBest, bodyweight, display, planning, onChange } = props
   const t = useT()
   const lang = useLang()
   const [open, setOpen] = useState(!set.done)
@@ -128,23 +130,25 @@ export function SetRowEditor(props: Props) {
           onChange={(e) => onChange((s) => ({ ...s, reps: e.target.value }))}
           className={input}
         />
-        <button
-          type="button"
-          aria-label={t('set.done')}
-          aria-pressed={set.done}
-          onClick={() => {
-            if (!set.done) props.onDone()
-            setOpen(false)
-          }}
-          className={
-            'size-12 shrink-0 rounded-lg border text-xl ' +
-            (set.done
-              ? 'border-accent bg-accent text-accent-fg'
-              : 'border-border bg-surface-2 text-muted')
-          }
-        >
-          ✓
-        </button>
+        {!planning && (
+          <button
+            type="button"
+            aria-label={t('set.done')}
+            aria-pressed={set.done}
+            onClick={() => {
+              if (!set.done) props.onDone()
+              setOpen(false)
+            }}
+            className={
+              'size-12 shrink-0 rounded-lg border text-xl ' +
+              (set.done
+                ? 'border-accent bg-accent text-accent-fg'
+                : 'border-border bg-surface-2 text-muted')
+            }
+          >
+            ✓
+          </button>
+        )}
       </div>
 
       <div className="flex items-center gap-2">

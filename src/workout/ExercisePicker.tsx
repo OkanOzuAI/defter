@@ -5,20 +5,36 @@ import { Sheet } from './Sheet'
 
 type Props = {
   title: string
-  onPick: (exercise: Exercise) => void
+  onPick: (exercise: Exercise, option: boolean) => void
   onClose: () => void
   /** Shown first, e.g. swap alternatives. The full library stays one tap away. */
   suggested?: Exercise[]
   suggestedEmpty?: string
+  /** Adds a checkbox whose state is passed to onPick (e.g. "save to template"). */
+  optionLabel?: string
 }
 
 const normalize = (text: string) => text.toLowerCase().replace(/[^a-z0-9]+/g, ' ')
 
-export function ExercisePicker({ title, onPick, onClose, suggested, suggestedEmpty }: Props) {
+export function ExercisePicker(props: Props) {
+  const { title, onPick, onClose, suggested, suggestedEmpty, optionLabel } = props
   const t = useT()
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState<Category | null>(null)
   const [showAll, setShowAll] = useState(!suggested)
+  const [option, setOption] = useState(false)
+
+  const optionBox = optionLabel && (
+    <label className="flex min-h-11 items-center gap-3 text-sm">
+      <input
+        type="checkbox"
+        checked={option}
+        onChange={(e) => setOption(e.target.checked)}
+        className="size-5 accent-(--accent)"
+      />
+      {optionLabel}
+    </label>
+  )
 
   const results = useMemo(() => {
     const words = normalize(query).split(' ').filter(Boolean)
@@ -33,7 +49,7 @@ export function ExercisePicker({ title, onPick, onClose, suggested, suggestedEmp
     <li key={exercise.id}>
       <button
         type="button"
-        onClick={() => onPick(exercise)}
+        onClick={() => onPick(exercise, option)}
         className="flex min-h-12 w-full items-center justify-between gap-3 border-b border-border py-2 text-left"
       >
         <span>{exercise.name}</span>
@@ -45,6 +61,7 @@ export function ExercisePicker({ title, onPick, onClose, suggested, suggestedEmp
   if (!showAll && suggested) {
     return (
       <Sheet title={title} onClose={onClose}>
+        {optionBox}
         {suggested.length === 0 ? (
           <p className="py-6 text-sm text-muted">{suggestedEmpty}</p>
         ) : (
@@ -78,6 +95,7 @@ export function ExercisePicker({ title, onPick, onClose, suggested, suggestedEmp
 
   return (
     <Sheet title={title} onClose={onClose}>
+      {optionBox}
       <input
         type="search"
         value={query}

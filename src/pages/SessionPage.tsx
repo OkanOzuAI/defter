@@ -1,21 +1,24 @@
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { isNetworkError } from '../api/errors'
 import { getSession } from '../api/workouts'
 import { useAuth } from '../auth/AuthContext'
 import { useProfile } from '../auth/useProfile'
-import { Button, Card, Message } from '../components/ui'
+import { Button, Card, Message, TextInput } from '../components/ui'
 import { useLang, useT } from '../i18n'
-import { volumeLoad } from '../lib/calc'
 import { formatDate } from '../lib/date'
-import { formatNumber } from '../lib/number'
+import { CopyModeSheet } from '../workout/CopyModeSheet'
 import { draftFromSession } from '../workout/draft'
 import { startDraft, useDraft } from '../workout/draftStore'
 import { resolveExercise } from '../workout/exercises'
 import { setText, sortSetRows } from '../workout/history'
 import { workoutKey } from '../workout/hooks'
 import { enqueue, flush, usePendingCount } from '../workout/outbox'
+import { SessionSummary } from '../workout/SessionSummary'
+import { itemsFromSession } from '../workout/templates'
 import type { SetRow } from '../workout/types'
+import { startFromSession, useSaveTemplate, useTemplates } from '../workout/useTemplates'
 
 export function SessionPage() {
   const { id = '' } = useParams()
@@ -27,9 +30,16 @@ export function SessionPage() {
   const { data: profile } = useProfile()
   const draft = useDraft(userId)
   const pending = usePendingCount()
+  const templates = useTemplates(userId)
+  const saveTemplate = useSaveTemplate(userId)
+  const [copying, setCopying] = useState(false)
+  const [templateName, setTemplateName] = useState<string | null>(null)
+  const [savedNote, setSavedNote] = useState(false)
 
+  const queryClient = useQueryClient()
+  const queryKey = [...workoutKey(userId), 'session', id]
   const query = useQuery({
-    queryKey: [...workoutKey(userId), 'session', id],
+    queryKey,
     queryFn: () => getSession(id),
     enabled: Boolean(userId && id),
   })
@@ -68,11 +78,33 @@ export function SessionPage() {
     groups.set(row.exercise_position, [...(groups.get(row.exercise_position) ?? []), row])
   }
 
-  const minutes =
-    session.started_at && session.ended_at
-      ? Math.round((Date.parse(session.ended_at) - Date.parse(session.started_at)) / 60_000)
-      : null
-  const workingSets = done.filter((row) => row.set_type !== 'warmup').length
+  const template = templates.data?.find((item) => item.id === session.template_id)
+  const items = itemsFromSession(session, sets)
+
+  function saveAsTemplate() {
+    const name = (templateName ?? '').trim()
+    if (!userId || !name) return
+    saveTemplate.mutate(
+      { id: crypto.randomUUID(), user_id: userId, name, note: null, weekdays: [], items },
+      {
+        onSuccess: (saved) => {
+          setTemplateName(null)
+          setSavedNote(true)
+          // This session becomes the first run of the new saved workout, so the next
+          // start is prefilled from it and later runs are compared with it.
+          const linked = { ...session, template_id: saved.id }
+          queryClient.setQueryData(queryKey, { session: linked, sets })
+          enqueue(userId, { session: linked })
+          void flush(userId)
+        },
+      },
+    )
+  }
+
+  function updateTemplate() {
+    if (!template || !window.confirm(t('tpl.updateConfirm', { name: template.name }))) return
+    saveTemplate.mutate({ ...template, items }, { onSuccess: () => setSavedNote(true) })
+  }
 
   function edit() {
     if (!userId) return
@@ -103,12 +135,9 @@ export function SessionPage() {
           })}
           {!session.ended_at && ` · ${t('workout.unfinished')}`}
         </p>
-        <p className="mt-1 text-sm text-muted">
-          {minutes !== null && `${t('workout.minutes', { n: minutes })} · `}
-          {t('workout.setsCount', { n: workingSets })} · {formatNumber(volumeLoad(done), lang, 0)}{' '}
-          kg
-        </p>
       </div>
+
+      {userId && <SessionSummary userId={userId} session={session} sets={sets} />}
 
       {groups.size === 0 && <p className="py-4 text-sm text-muted">{t('workout.noSets')}</p>}
 
@@ -152,6 +181,69 @@ export function SessionPage() {
       {session.note && <p className="text-sm text-muted">{session.note}</p>}
 
       <div className="space-y-2 pt-2">
+        {templateName === null ? (
+          <Button
+            block
+            disabled={items.length === 0}
+            onClick={() => setTemplateName(session.name ?? '')}
+          >
+            {t('tpl.saveAs')}
+          </Button>
+        ) : (
+          <Card>
+            <label className="block">
+              <span className="mb-1.5 block text-sm text-muted">{t('tpl.name')}</span>
+              <TextInput
+                autoFocus
+                value={templateName}
+                maxLength={80}
+                placeholder={t('tpl.namePlaceholder')}
+                onChange={(e) => setTemplateName(e.target.value)}
+              />
+            </label>
+            <div className="mt-3 flex gap-2">
+              <Button
+                className="flex-1"
+                disabled={!templateName.trim() || saveTemplate.isPending}
+                onClick={saveAsTemplate}
+              >
+                {saveTemplate.isPending ? t('common.saving') : t('common.save')}
+              </Button>
+              <Button variant="ghost" onClick={() => setTemplateName(null)}>
+                {t('common.cancel')}
+              </Button>
+            </div>
+          </Card>
+        )}
+        {template && (
+          <Button
+            variant="secondary"
+            block
+            disabled={saveTemplate.isPending || items.length === 0}
+            onClick={updateTemplate}
+          >
+            {t('tpl.update')}
+          </Button>
+        )}
+        {savedNote && !saveTemplate.isPending && (
+          <p role="status" className="text-center text-sm text-accent">
+            {t('tpl.saved')}
+          </p>
+        )}
+        {saveTemplate.isError && (
+          <p role="alert" className="text-center text-sm text-danger">
+            {t(isNetworkError(saveTemplate.error) ? 'app.serverUnreachable' : 'common.error')}
+          </p>
+        )}
+
+        <Button
+          variant="secondary"
+          block
+          disabled={Boolean(draft) || items.length === 0}
+          onClick={() => setCopying(true)}
+        >
+          {t('copy.action')}
+        </Button>
         <Button variant="secondary" block disabled={Boolean(draft)} onClick={edit}>
           {t('workout.edit')}
         </Button>
@@ -160,6 +252,16 @@ export function SessionPage() {
           {t('workout.delete')}
         </Button>
       </div>
+
+      {copying && userId && (
+        <CopyModeSheet
+          onClose={() => setCopying(false)}
+          onChoose={(mode) => {
+            startFromSession(userId, session, sets, mode)
+            navigate('/workout/active')
+          }}
+        />
+      )}
     </div>
   )
 }

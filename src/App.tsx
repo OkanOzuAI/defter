@@ -15,6 +15,8 @@ import { ProfilePage } from './pages/ProfilePage'
 import { RegisterPage } from './pages/RegisterPage'
 import { SectionPage } from './pages/SectionPage'
 import { SessionPage } from './pages/SessionPage'
+import { TemplateEditPage } from './pages/TemplateEditPage'
+import { TemplatesPage } from './pages/TemplatesPage'
 import { WorkoutPage } from './pages/WorkoutPage'
 
 export default function App() {
@@ -49,6 +51,8 @@ export default function App() {
           <Route path="workout/active" element={<ActiveWorkoutPage />} />
           <Route path="workout/session/:id" element={<SessionPage />} />
           <Route path="workout/exercise/:id" element={<ExerciseHistoryPage />} />
+          <Route path="workout/templates" element={<TemplatesPage />} />
+          <Route path="workout/templates/:id" element={<TemplateEditPage />} />
           <Route
             path="nutrition"
             element={<SectionPage title="nav.nutrition" empty="nutrition.empty" />}

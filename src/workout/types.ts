@@ -28,6 +28,8 @@ export type DraftSet = {
   failure: Failure
   techniques: Technique[]
   done: boolean
+  /** Stored template values, shown greyed out when there is no history to show instead. */
+  hint?: { weight: number | null; reps: number | null }
 }
 
 export type DraftExercise = {
@@ -99,3 +101,37 @@ export type SetRow = {
   techniques: string[]
   done: boolean
 }
+
+// --- Saved workouts (templates) ---------------------------------------------
+
+export type TemplateSet = {
+  set_index: number
+  side: Side
+  set_type: SetType
+  weight: number | null
+  reps: number | null
+  rir: number | null
+  failure: Failure
+  techniques: string[]
+}
+
+export type TemplateItem = {
+  exercise_id: string
+  superset_group: string | null
+  note: string
+  tempo: string
+  sets: TemplateSet[]
+}
+
+export type TemplateRow = {
+  id: string
+  user_id: string
+  name: string
+  note: string | null
+  /** 1 = Monday … 7 = Sunday. */
+  weekdays: number[]
+  items: TemplateItem[]
+}
+
+/** How a saved workout or a past session is copied into a new one. */
+export type CopyMode = 'values' | 'structure'

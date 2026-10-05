@@ -33,6 +33,10 @@ type Props = {
   bodyweight?: number
   display: IntensityDisplay
   restSec: number
+  /** Editing a saved workout rather than logging a session. */
+  planning?: boolean
+  /** Set when the session came from a saved workout: offers to keep a swap in it. */
+  onSwapInTemplate?: (index: number, exerciseId: string, unilateral: boolean) => void
   apply: (fn: (draft: Draft) => Draft) => void
   onGlossary: () => void
 }
@@ -42,7 +46,7 @@ const field =
   'block min-h-11 w-full rounded-lg border border-border bg-surface-2 px-3 placeholder:text-muted/60 focus:border-accent focus:outline-none'
 
 export function ExerciseCard(props: Props) {
-  const { draft, item, exercise, lastSets, bodyweight, display, apply } = props
+  const { draft, item, exercise, lastSets, bodyweight, display, planning, apply } = props
   const t = useT()
   const lang = useLang()
   const [more, setMore] = useState(false)
@@ -58,7 +62,7 @@ export function ExerciseCard(props: Props) {
   const lastWorking = lastSets.filter((row) => row.set_type !== 'warmup')
   const lastBest = bestE1rm(lastSets, exercise, bodyweight)
 
-  /** Last time's values for the same set, or the left side just logged for the right one. */
+  /** Greyed-out values for an empty row: the left side just logged, else the user's earlier values. */
   function placeholderFor(set: DraftSet) {
     if (set.side === 'R') {
       const left = sets.find((s) => s.set_index === set.set_index && s.side === 'L')
@@ -68,6 +72,8 @@ export function ExerciseCard(props: Props) {
         return { weight: weight ?? null, reps: reps ?? null }
       }
     }
+    // Started as "exercises only": the values of the workout it was copied from.
+    if (set.hint) return set.hint
     const previous = lastSets.find((r) => r.set_index === set.set_index && r.side === set.side)
     return previous ? { weight: previous.weight, reps: previous.reps } : undefined
   }
@@ -197,6 +203,7 @@ export function ExerciseCard(props: Props) {
             lastBest={lastBest}
             bodyweight={bodyweight}
             display={display}
+            planning={planning}
             onChange={(fn) => apply((d) => updateSet(d, key, set.id, fn))}
             onDone={() => complete(set)}
             onRemove={() => apply((d) => removeSet(d, key, set.id))}
@@ -257,8 +264,10 @@ export function ExerciseCard(props: Props) {
           title={t('ex.swapTitle')}
           suggested={findAlternatives(exercise)}
           suggestedEmpty={t('ex.swapEmpty')}
+          optionLabel={props.onSwapInTemplate ? t('ex.swapSaveToTemplate') : undefined}
           onClose={() => setSwapping(false)}
-          onPick={(picked) => {
+          onPick={(picked, keepInTemplate) => {
+            if (keepInTemplate) props.onSwapInTemplate?.(index, picked.id, picked.unilateral)
             apply((d) => swapExercise(d, key, picked.id, picked.unilateral))
             setSwapping(false)
           }}

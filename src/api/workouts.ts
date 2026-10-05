@@ -107,3 +107,32 @@ export async function getRecentSets(exerciseIds: string[], before: DateStr): Pro
   if (error) throw error
   return data
 }
+
+/** Finished sessions done from a saved workout, newest first. */
+export async function getTemplateSessions(templateId: string, limit = 5): Promise<SessionRow[]> {
+  const { data, error } = await supabase
+    .from('workout_sessions')
+    .select(SESSION_COLUMNS)
+    .eq('template_id', templateId)
+    .not('ended_at', 'is', null)
+    .order('date', { ascending: false })
+    .order('started_at', { ascending: false })
+    .limit(limit)
+  if (error) throw error
+  return data
+}
+
+/** All completed sets of the given exercises up to a date, for PR detection. */
+export async function getExerciseHistory(exerciseIds: string[], until: DateStr): Promise<SetRow[]> {
+  if (exerciseIds.length === 0) return []
+  const { data, error } = await supabase
+    .from('set_logs')
+    .select(SET_COLUMNS)
+    .in('exercise_id', exerciseIds)
+    .eq('done', true)
+    .lte('date', until)
+    .order('date', { ascending: false })
+    .limit(5000)
+  if (error) throw error
+  return data
+}
