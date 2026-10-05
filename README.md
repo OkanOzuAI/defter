@@ -4,9 +4,9 @@ Multi-user workout, nutrition and cardio tracker. Vite + React + TypeScript on V
 Supabase (Free) for accounts and Postgres. Your data lives in Supabase, so logging in from any
 device brings your whole archive with you.
 
-Status: phases 1–7 of 12 are built (scaffold, TR/EN, database schema, accounts, onboarding,
+Status: phases 1–8 of 12 are built (scaffold, TR/EN, database schema, accounts, onboarding,
 exercise library, calculations, workout logging with offline draft and sync queue, saved workouts and weekly plan, nutrition log and supplements,
-cardio and steps).
+cardio and steps, diet phases and the Today page).
 This README is completed in phase 12.
 
 ## Local setup
@@ -96,3 +96,7 @@ npm run dev                  # http://localhost:5173
   recent weigh-in of the last 60 days and is flagged; repeating or editing such a session
   re-estimates instead of treating the old estimate as entered.
 - **Steps** are stored in the day's log (`daily_logs.steps`); the step goal lives on the profile.
+- **Overlapping diet phases**: the one that started most recently wins. Adding a new phase does
+  not close the previous one automatically; set its end date if you want the history exact.
+- **Reverse diet**: both the training-day and the rest-day starting calories climb by the weekly
+  step. Macro targets stay as entered.

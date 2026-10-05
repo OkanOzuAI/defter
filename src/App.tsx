@@ -6,6 +6,7 @@ import { FullScreen, Message } from './components/ui'
 import { useT } from './i18n'
 import { ActiveWorkoutPage } from './pages/ActiveWorkoutPage'
 import { CardioPage } from './pages/CardioPage'
+import { DietPhasesPage } from './pages/DietPhasesPage'
 import { ExerciseHistoryPage } from './pages/ExerciseHistoryPage'
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage'
 import { LoginPage } from './pages/LoginPage'
@@ -20,6 +21,7 @@ import { SessionPage } from './pages/SessionPage'
 import { SupplementsPage } from './pages/SupplementsPage'
 import { TemplateEditPage } from './pages/TemplateEditPage'
 import { TemplatesPage } from './pages/TemplatesPage'
+import { TodayPage } from './pages/TodayPage'
 import { WorkoutPage } from './pages/WorkoutPage'
 
 export default function App() {
@@ -49,7 +51,7 @@ export default function App() {
 
       <Route element={<RequireAuth />}>
         <Route element={<Layout />}>
-          <Route index element={<SectionPage title="nav.today" empty="today.empty" />} />
+          <Route index element={<TodayPage />} />
           <Route path="workout" element={<WorkoutPage />} />
           <Route path="workout/active" element={<ActiveWorkoutPage />} />
           <Route path="workout/session/:id" element={<SessionPage />} />
@@ -64,6 +66,7 @@ export default function App() {
           />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="profile/supplements" element={<SupplementsPage />} />
+          <Route path="profile/phases" element={<DietPhasesPage />} />
         </Route>
       </Route>
 
