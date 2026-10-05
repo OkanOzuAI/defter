@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "test": "vitest run",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "rls-check": "node --env-file=.env.local scripts/rls-check.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.2",
