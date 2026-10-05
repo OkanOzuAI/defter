@@ -11,6 +11,8 @@ export const en: Dict = {
   'app.notConfigured': 'Supabase is not configured',
   'app.notConfiguredHint':
     'Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to .env.local, then restart the dev server. Steps are in the README.',
+  'app.updateAvailable': 'Update available',
+  'app.updateReload': 'Reload',
   'app.notFound': 'Page not found',
   'app.backHome': 'Back to home',
 

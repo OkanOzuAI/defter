@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { Outlet } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import { useT } from '../i18n'
@@ -24,7 +25,9 @@ export function Layout() {
       )}
       <main className="flex-1 overflow-y-auto">
         <div className="mx-auto max-w-xl px-4 py-4">
-          <Outlet />
+          <Suspense fallback={<p className="py-6 text-sm text-muted">{t('app.loading')}</p>}>
+            <Outlet />
+          </Suspense>
         </div>
       </main>
       <BottomNav />

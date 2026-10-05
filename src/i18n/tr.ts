@@ -8,6 +8,8 @@ export const tr = {
   'app.notConfigured': 'Supabase ayarlanmamış',
   'app.notConfiguredHint':
     '.env.local dosyasına VITE_SUPABASE_URL ve VITE_SUPABASE_ANON_KEY ekle, sonra sunucuyu yeniden başlat. Adımlar README dosyasında.',
+  'app.updateAvailable': 'Güncelleme var',
+  'app.updateReload': 'Yenile',
   'app.notFound': 'Sayfa bulunamadı',
   'app.backHome': 'Ana sayfaya dön',
 
