@@ -5,7 +5,7 @@ import { useT } from '../i18n'
 import { addExercise } from './draft'
 import { ExerciseCard } from './ExerciseCard'
 import { ExercisePicker } from './ExercisePicker'
-import { resolveExercise } from './exercises'
+import { useExercises } from './exercises'
 import { Glossary } from './Glossary'
 import type { Draft, SetRow } from './types'
 
@@ -30,6 +30,7 @@ export function ExerciseList({
 }: Props) {
   const t = useT()
   const { data: profile } = useProfile()
+  const resolveExercise = useExercises().get
   const [picking, setPicking] = useState(false)
   const [glossary, setGlossary] = useState(false)
   const timed = !planning && !draft.editing
@@ -40,9 +41,12 @@ export function ExerciseList({
 
       {draft.exercises.map((item) => {
         const exercise = resolveExercise(item.exercise_id)
-        const restSec = exercise.isCompound
-          ? (profile?.rest_compound_sec ?? exercise.restSec)
-          : (profile?.rest_isolation_sec ?? exercise.restSec)
+        // The user's own rest time for this exercise, else their default for its kind.
+        const restSec =
+          exercise.restOverride ??
+          (exercise.isCompound
+            ? (profile?.rest_compound_sec ?? exercise.restSec)
+            : (profile?.rest_isolation_sec ?? exercise.restSec))
         return (
           <ExerciseCard
             key={item.key}

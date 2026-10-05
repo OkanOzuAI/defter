@@ -8,6 +8,7 @@ import { ActiveWorkoutPage } from './pages/ActiveWorkoutPage'
 import { CardioPage } from './pages/CardioPage'
 import { DietPhasesPage } from './pages/DietPhasesPage'
 import { ExerciseHistoryPage } from './pages/ExerciseHistoryPage'
+import { ExerciseLibraryPage } from './pages/ExerciseLibraryPage'
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage'
 import { LoginPage } from './pages/LoginPage'
 import { NotFoundPage } from './pages/NotFoundPage'
@@ -64,6 +65,7 @@ export default function App() {
           <Route path="profile" element={<ProfilePage />} />
           <Route path="profile/supplements" element={<SupplementsPage />} />
           <Route path="profile/phases" element={<DietPhasesPage />} />
+          <Route path="profile/exercises" element={<ExerciseLibraryPage />} />
         </Route>
       </Route>
 

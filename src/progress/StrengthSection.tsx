@@ -19,7 +19,7 @@ import { useLang, useT } from '../i18n'
 import { recentBodyweight } from '../lib/calc'
 import { formatDate } from '../lib/date'
 import { formatNumber } from '../lib/number'
-import { resolveExercise } from '../workout/exercises'
+import { useExercises } from '../workout/exercises'
 import { setText } from '../workout/history'
 import { workoutKey } from '../workout/hooks'
 import { ChartBox, SectionTitle } from './chart'
@@ -31,6 +31,7 @@ export function StrengthSection({ userId }: { userId: string }) {
   const lang = useLang()
   const { data: profile } = useProfile()
   const [picked, setPicked] = useState<string | null>(null)
+  const resolveExercise = useExercises().get
 
   const ids = useQuery({
     queryKey: [...workoutKey(userId), 'logged-exercises'],

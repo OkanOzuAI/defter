@@ -4,10 +4,10 @@ Multi-user workout, nutrition and cardio tracker. Vite + React + TypeScript on V
 Supabase (Free) for accounts and Postgres. Your data lives in Supabase, so logging in from any
 device brings your whole archive with you.
 
-Status: phases 1–9 of 12 are built (scaffold, TR/EN, database schema, accounts, onboarding,
+Status: phases 1–10 of 12 are built (scaffold, TR/EN, database schema, accounts, onboarding,
 exercise library, calculations, workout logging with offline draft and sync queue, saved workouts and weekly plan, nutrition log and supplements,
 cardio and steps, diet phases and the Today page,
-progress charts).
+progress charts, profile and settings).
 This README is completed in phase 12.
 
 ## Local setup
@@ -109,3 +109,10 @@ npm run dev                  # http://localhost:5173
   types fold into a grey "Other".
 - **Progress windows**: weight, nutrition and cardio follow the 30/90/180-day picker; hard sets
   show the current week plus the 8 before it; the training heatmap shows 12 weeks.
+- **Custom exercises and overrides** are loaded into a small in-memory store (and cached on the
+  device) so every screen can look an exercise up synchronously, offline included. Hidden
+  exercises disappear from pickers but old sessions that used them still render.
+- **JSON import is a merge**: rows are upserted by id (by day for daily logs and measurements) and
+  re-owned by the signed-in account; nothing is deleted and the profile is left alone.
+- **CSV files** start with a UTF-8 BOM so Excel shows Turkish characters correctly.
+- **Deleting the account** also removes that user's local data (draft, queue, caches) on the device.

@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
-import { CATEGORIES, EXERCISES, type Category, type Exercise } from '../data/exercises'
+import { CATEGORIES, type Category, type Exercise } from '../data/exercises'
 import { useT } from '../i18n'
+import { useExercises } from './exercises'
 import { Sheet } from './Sheet'
 
 type Props = {
@@ -14,7 +15,7 @@ type Props = {
   optionLabel?: string
 }
 
-const normalize = (text: string) => text.toLowerCase().replace(/[^a-z0-9]+/g, ' ')
+const normalize = (text: string) => text.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ')
 
 export function ExercisePicker(props: Props) {
   const { title, onPick, onClose, suggested, suggestedEmpty, optionLabel } = props
@@ -23,6 +24,7 @@ export function ExercisePicker(props: Props) {
   const [category, setCategory] = useState<Category | null>(null)
   const [showAll, setShowAll] = useState(!suggested)
   const [option, setOption] = useState(false)
+  const { visible } = useExercises()
 
   const optionBox = optionLabel && (
     <label className="flex min-h-11 items-center gap-3 text-sm">
@@ -38,12 +40,12 @@ export function ExercisePicker(props: Props) {
 
   const results = useMemo(() => {
     const words = normalize(query).split(' ').filter(Boolean)
-    return EXERCISES.filter(
+    return visible.filter(
       (exercise) =>
         (!category || exercise.category === category) &&
         words.every((word) => normalize(exercise.name).includes(word)),
     )
-  }, [query, category])
+  }, [query, category, visible])
 
   const row = (exercise: Exercise) => (
     <li key={exercise.id}>

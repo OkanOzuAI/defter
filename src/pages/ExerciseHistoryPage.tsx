@@ -19,7 +19,7 @@ import { useLang, useT } from '../i18n'
 import { recentBodyweight } from '../lib/calc'
 import { formatDate } from '../lib/date'
 import { formatNumber } from '../lib/number'
-import { resolveExercise } from '../workout/exercises'
+import { useExercises } from '../workout/exercises'
 import { bestE1rm, setText, sortSetRows } from '../workout/history'
 import { workoutKey } from '../workout/hooks'
 import type { SetRow } from '../workout/types'
@@ -32,7 +32,7 @@ export function ExerciseHistoryPage() {
   const { user } = useAuth()
   const userId = user?.id
   const { data: profile } = useProfile()
-  const exercise = resolveExercise(id)
+  const exercise = useExercises().get(id)
   const needsBodyweight = exercise.loadMode === 'added_bodyweight'
 
   const sets = useQuery({

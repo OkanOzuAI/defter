@@ -73,6 +73,12 @@ export type Exercise = {
   barWeight: number | null
   /** Default rest in seconds. */
   restSec: number
+  /** Set from the user's data, not the library: */
+  custom?: boolean
+  hidden?: boolean
+  /** The user's own rest time for this exercise; overrides the profile defaults. */
+  restOverride?: number
+  note?: string
 }
 
 export const CATEGORIES: Category[] = [
@@ -493,6 +499,8 @@ core('Plank', 'bodyweight', 'anti_extension')
 core('Side Plank', 'bodyweight', 'rotation', { uni: true })
 core('Pallof Press', 'cable', 'rotation', { uni: true })
 core('Cable Woodchopper', 'cable', 'rotation', { uni: true })
+
+export const PATTERN_IDS = Object.keys(PATTERNS) as Pattern[]
 
 export const EXERCISES: readonly Exercise[] = list
 

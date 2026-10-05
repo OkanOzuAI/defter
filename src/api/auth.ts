@@ -28,3 +28,25 @@ export async function requestPasswordReset(email: string): Promise<void> {
   })
   if (error) throw error
 }
+
+export async function changePassword(password: string): Promise<void> {
+  const { error } = await supabase.auth.updateUser({ password })
+  if (error) throw error
+}
+
+/**
+ * Deletes the signed-in user through the `delete_my_account()` database function
+ * (every table cascades), then drops this device's session and local data.
+ */
+export async function deleteAccount(userId: string): Promise<void> {
+  const { error } = await supabase.rpc('delete_my_account')
+  if (error) throw error
+  try {
+    for (const key of Object.keys(localStorage)) {
+      if (key.startsWith('defter.') && key.includes(userId)) localStorage.removeItem(key)
+    }
+  } catch {
+    // nothing to clear
+  }
+  await supabase.auth.signOut({ scope: 'local' })
+}

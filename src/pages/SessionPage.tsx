@@ -11,7 +11,7 @@ import { formatDate } from '../lib/date'
 import { CopyModeSheet } from '../workout/CopyModeSheet'
 import { draftFromSession } from '../workout/draft'
 import { startDraft, useDraft } from '../workout/draftStore'
-import { resolveExercise } from '../workout/exercises'
+import { useExercises } from '../workout/exercises'
 import { setText, sortSetRows } from '../workout/history'
 import { workoutKey } from '../workout/hooks'
 import { enqueue, flush, usePendingCount } from '../workout/outbox'
@@ -30,6 +30,7 @@ export function SessionPage() {
   const { data: profile } = useProfile()
   const draft = useDraft(userId)
   const pending = usePendingCount()
+  const resolveExercise = useExercises().get
   const templates = useTemplates(userId)
   const saveTemplate = useSaveTemplate(userId)
   const [copying, setCopying] = useState(false)

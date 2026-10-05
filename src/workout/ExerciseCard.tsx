@@ -19,6 +19,7 @@ import {
   updateSet,
 } from './draft'
 import { ExercisePicker } from './ExercisePicker'
+import { useExercises } from './exercises'
 import { bestE1rm, setText, type IntensityDisplay } from './history'
 import { SetRowEditor } from './SetRowEditor'
 import { primeAudio } from './sound'
@@ -51,6 +52,7 @@ export function ExerciseCard(props: Props) {
   const lang = useLang()
   const [more, setMore] = useState(false)
   const [swapping, setSwapping] = useState(false)
+  const { visible } = useExercises()
   const [countText, setCountText] = useState<string | null>(null)
 
   const key = item.key
@@ -262,7 +264,7 @@ export function ExerciseCard(props: Props) {
       {swapping && (
         <ExercisePicker
           title={t('ex.swapTitle')}
-          suggested={findAlternatives(exercise)}
+          suggested={findAlternatives(exercise, visible)}
           suggestedEmpty={t('ex.swapEmpty')}
           optionLabel={props.onSwapInTemplate ? t('ex.swapSaveToTemplate') : undefined}
           onClose={() => setSwapping(false)}

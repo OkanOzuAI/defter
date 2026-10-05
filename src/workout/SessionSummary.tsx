@@ -4,7 +4,7 @@ import { Card } from '../components/ui'
 import { useLang, useT } from '../i18n'
 import { volumeLoad } from '../lib/calc'
 import { formatNumber } from '../lib/number'
-import { resolveExercise } from './exercises'
+import { useExercises } from './exercises'
 import { useBodyweight, workoutKey } from './hooks'
 import { findPRs, type PR } from './templates'
 import type { SessionRow, SetRow } from './types'
@@ -29,6 +29,7 @@ export function SessionSummary({
 }) {
   const t = useT()
   const lang = useLang()
+  const resolveExercise = useExercises().get
   const bodyweight = useBodyweight(userId, session.date)
   const done = sets.filter((row) => row.done)
   const exerciseIds = [...new Set(done.map((row) => row.exercise_id))].sort()

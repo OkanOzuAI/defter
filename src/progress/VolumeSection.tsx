@@ -4,7 +4,7 @@ import { Card } from '../components/ui'
 import { useLang, useT } from '../i18n'
 import { formatDate, type DateStr } from '../lib/date'
 import { formatNumber } from '../lib/number'
-import { resolveExercise } from '../workout/exercises'
+import { useExercises } from '../workout/exercises'
 import { workoutKey } from '../workout/hooks'
 import { SectionTitle } from './chart'
 import { hardSetsByWeek, sideVolumes, weekStarts } from './series'
@@ -14,6 +14,7 @@ const WEEKS = 9 // the current week plus the eight before it
 export function VolumeSection({ userId, today }: { userId: string; today: DateStr }) {
   const t = useT()
   const lang = useLang()
+  const resolveExercise = useExercises().get
   const weeks = weekStarts(today, WEEKS)
   // Newest first, so the current week sits next to the muscle names without scrolling.
   const order = weeks.map((_, i) => i).reverse()
