@@ -318,6 +318,12 @@ export const en: Dict = {
   'tpl.notFound': 'Saved workout not found',
   'ex.swapSaveToTemplate': 'Save to template',
 
+  'sug.title': 'Suggested workouts',
+  'sug.hint':
+    'You can add a ready-made workout to your saved workouts. The copy is yours: change its exercises, set counts and days as you like.',
+  'sug.add': 'Add',
+  'sug.addAll': 'Add all',
+  'sug.added': 'Added',
   'copy.title': 'How do you want to start?',
   'copy.values': 'Copy with values',
   'copy.valuesHint': 'Weight, reps and RIR come prefilled; you only confirm or tweak them.',

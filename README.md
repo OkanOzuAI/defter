@@ -25,7 +25,8 @@ Every row belongs to one user and Postgres Row Level Security keeps it private t
 - **Profil**: settings, diet phases, supplements, exercise library with custom exercises, JSON /
   CSV export, JSON import, password change, account deletion.
 
-The app never prescribes training: no default program, no suggested sets, reps or loads.
+The app never pushes training onto anyone: no default program is applied and no loads are
+suggested. A few ready-made workouts can be added on request from the saved-workouts page.
 
 ## Local setup
 
@@ -247,6 +248,11 @@ scripts/rls-check.ts                cross-user isolation check
   The default dose only prefills the amount field. Beslenme shows the selected day's entries as a
   one-line summary instead of a second copy of the list, so supplements are entered in one place
   (today only; past days are read-only).
+- **Suggested workouts** (added later, at the owner's request): the saved-workouts page offers five
+  ready-made push / pull / legs workouts. This is a deliberate exception to "no default program":
+  nothing is added to anyone's account unless they tap "Ekle", and the copy is fully editable.
+  Rep ranges live in each exercise's note (a set stores one rep count, not a range); weight and
+  reps start empty.
 
 ## Roadmap (not built)
 

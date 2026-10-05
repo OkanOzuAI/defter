@@ -6,6 +6,7 @@ import { Button, Card, Message } from '../components/ui'
 import { useT } from '../i18n'
 import { CopyModeSheet } from '../workout/CopyModeSheet'
 import { useDraft } from '../workout/draftStore'
+import { SuggestedWorkouts } from '../workout/SuggestedWorkouts'
 import type { TemplateRow } from '../workout/types'
 import {
   startFromTemplate,
@@ -109,6 +110,8 @@ export function TemplatesPage() {
           </Card>
         ))
       )}
+
+      {userId && templates.data && <SuggestedWorkouts userId={userId} existing={templates.data} />}
 
       <Button variant="secondary" block onClick={() => navigate('/workout/templates/new')}>
         + {t('tpl.new')}

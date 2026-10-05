@@ -315,6 +315,12 @@ export const tr = {
   'tpl.notFound': 'Kayıtlı antrenman bulunamadı',
   'ex.swapSaveToTemplate': 'Şablona kaydet',
 
+  'sug.title': 'Önerilen antrenmanlar',
+  'sug.hint':
+    'Hazır bir antrenmanı kayıtlı antrenmanlarına ekleyebilirsin. Eklediğin kopya senindir: hareketleri, set sayılarını ve günlerini dilediğin gibi değiştirirsin.',
+  'sug.add': 'Ekle',
+  'sug.addAll': 'Hepsini ekle',
+  'sug.added': 'Eklendi',
   'copy.title': 'Nasıl başlayalım?',
   'copy.values': 'Değerleriyle kopyala',
   'copy.valuesHint': 'Kilo, tekrar ve RIR dolu gelir; yalnızca onaylar ya da düzeltirsin.',
