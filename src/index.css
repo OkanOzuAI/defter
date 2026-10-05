@@ -11,6 +11,11 @@
   --accent-fg: #06110d;
   --danger: #e5766c;
   --warn: #d9a94e;
+  /* Chart series, in fixed order. Checked for colour-blind separation on this surface. */
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --series-3: #199e70;
+  --series-4: #c98500;
   color-scheme: dark;
 }
 
@@ -25,6 +30,10 @@
   --accent-fg: #ffffff;
   --danger: #b3392f;
   --warn: #8a6410;
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --series-4: #eda100;
   color-scheme: light;
 }
 

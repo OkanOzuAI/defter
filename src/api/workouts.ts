@@ -147,3 +147,29 @@ export async function getSessionDates(from: DateStr, to: DateStr): Promise<DateS
   if (error) throw error
   return [...new Set(data.map((row) => row.date as DateStr))]
 }
+
+/** Completed sets between two dates (inclusive), oldest first. */
+export async function getSetsInRange(from: DateStr, to: DateStr): Promise<SetRow[]> {
+  const { data, error } = await supabase
+    .from('set_logs')
+    .select(SET_COLUMNS)
+    .eq('done', true)
+    .gte('date', from)
+    .lte('date', to)
+    .order('date')
+    .limit(10000)
+  if (error) throw error
+  return data
+}
+
+/** Ids of every exercise the user has logged, most recently used first. */
+export async function getLoggedExerciseIds(): Promise<string[]> {
+  const { data, error } = await supabase
+    .from('set_logs')
+    .select('exercise_id')
+    .eq('done', true)
+    .order('date', { ascending: false })
+    .limit(5000)
+  if (error) throw error
+  return [...new Set(data.map((row) => row.exercise_id as string))]
+}

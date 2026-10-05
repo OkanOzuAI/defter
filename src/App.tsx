@@ -15,8 +15,8 @@ import { NutritionPage } from './pages/NutritionPage'
 import { OnboardingPage } from './pages/OnboardingPage'
 import { PrivacyPage } from './pages/PrivacyPage'
 import { ProfilePage } from './pages/ProfilePage'
+import { ProgressPage } from './pages/ProgressPage'
 import { RegisterPage } from './pages/RegisterPage'
-import { SectionPage } from './pages/SectionPage'
 import { SessionPage } from './pages/SessionPage'
 import { SupplementsPage } from './pages/SupplementsPage'
 import { TemplateEditPage } from './pages/TemplateEditPage'
@@ -60,10 +60,7 @@ export default function App() {
           <Route path="workout/templates/:id" element={<TemplateEditPage />} />
           <Route path="nutrition" element={<NutritionPage />} />
           <Route path="cardio" element={<CardioPage />} />
-          <Route
-            path="progress"
-            element={<SectionPage title="nav.progress" empty="progress.empty" />}
-          />
+          <Route path="progress" element={<ProgressPage />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="profile/supplements" element={<SupplementsPage />} />
           <Route path="profile/phases" element={<DietPhasesPage />} />
