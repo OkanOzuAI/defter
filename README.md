@@ -4,6 +4,8 @@ Multi-user workout, nutrition and cardio tracker. Bilingual (TR / EN), mobile-fi
 and free to run: Vite + React + TypeScript on Vercel Hobby, Supabase Free for accounts and
 Postgres.
 
+Live at https://defter-plum.vercel.app
+
 Your data lives in Supabase, so logging in from any device brings your whole archive with you.
 Every row belongs to one user and Postgres Row Level Security keeps it private to them.
 
