@@ -1,16 +1,33 @@
 # Defter
 
-Multi-user workout, nutrition and cardio tracker. Vite + React + TypeScript on Vercel (Hobby),
-Supabase (Free) for accounts and Postgres. Your data lives in Supabase, so logging in from any
-device brings your whole archive with you.
+Multi-user workout, nutrition and cardio tracker. Bilingual (TR / EN), mobile-first, installable,
+and free to run: Vite + React + TypeScript on Vercel Hobby, Supabase Free for accounts and
+Postgres.
 
-Status: phases 1–10 of 12 are built (scaffold, TR/EN, database schema, accounts, onboarding,
-exercise library, calculations, workout logging with offline draft and sync queue, saved workouts and weekly plan, nutrition log and supplements,
-cardio and steps, diet phases and the Today page,
-progress charts, profile and settings).
-This README is completed in phase 12.
+Your data lives in Supabase, so logging in from any device brings your whole archive with you.
+Every row belongs to one user and Postgres Row Level Security keeps it private to them.
+
+## What it does
+
+- **Bugün**: diet phase and day, today's planned workout, weight trend, calories, protein, salt,
+  water, steps, cardio, supplement checklist.
+- **Antrenman**: log sets with kg, reps, RIR (or RPE), failure chips, technique tags, set types
+  and separate left/right sets. Rest timer, glossary, swap alternatives, supersets. Saved
+  workouts with a weekly plan; start one "with values" or "exercises only". Summary with PRs.
+- **Beslenme**: current weight and calories card, daily log (weight, macros, fiber, salt/sodium,
+  water, sleep, energy), targets from the active diet phase, supplements with dose and time.
+- **Kardiyo**: steps with goal and streak, cardio sessions with type-specific fields, kcal
+  estimates, presets, weekly summary.
+- **İlerleme**: weight and TDEE trends, weekly nutrition, per-exercise strength, weekly hard sets
+  per muscle, cardio, consistency, body measurements.
+- **Profil**: settings, diet phases, supplements, exercise library with custom exercises, JSON /
+  CSV export, JSON import, password change, account deletion.
+
+The app never prescribes training: no default program, no suggested sets, reps or loads.
 
 ## Local setup
+
+Requires Node 22.18 or newer.
 
 ```bash
 npm install
@@ -18,17 +35,118 @@ cp .env.example .env.local   # then fill in the two Supabase values
 npm run dev                  # http://localhost:5173
 ```
 
-`npm run build`, `npm run lint`, `npm test`.
+| Command             | What it does                                                |
+| ------------------- | ----------------------------------------------------------- |
+| `npm run dev`       | Dev server                                                  |
+| `npm run build`     | Type-check and build to `dist/`                             |
+| `npm run preview`   | Serve the production build locally                          |
+| `npm run lint`      | ESLint                                                      |
+| `npm test`          | Vitest (calculations, draft logic, series)                  |
+| `npm run format`    | Prettier                                                    |
+| `npm run rls-check` | Proves two users cannot reach each other's rows (see below) |
 
 ## Supabase setup (once)
 
-1. Create a free project at supabase.com (pick a region near you, e.g. Frankfurt).
-2. SQL Editor → New query → paste all of `supabase/migrations/0001_init.sql` → Run.
-3. Authentication → Sign In / Providers → Email: enabled, **Confirm email off**.
-4. Authentication → URL Configuration: add `http://localhost:5173` to Redirect URLs
-   (the Vercel URL is added after the first deploy, and becomes the Site URL).
-5. Project Settings → API (or the "Connect" button): copy the Project URL and the
-   anon / publishable key into `.env.local`. Never use the service_role / secret key.
+Dashboard labels move around; look for the nearest match.
+
+1. Create a free project at supabase.com. Pick a region near you (for Turkey: Frankfurt or
+   Paris). In the security options keep **Data API** on, **Automatically expose new tables** off,
+   **automatic RLS** on.
+2. SQL Editor → New query → paste all of `supabase/migrations/0001_init.sql` → Run. Expect
+   "Success. No rows returned". (With the CLI linked: `supabase db push`.)
+3. Authentication → Sign In / Providers → Email: enabled, **Confirm email off**. Supabase's
+   built-in mail sender only delivers to the project's own team, so with confirmation on, other
+   people could register but never confirm.
+4. Authentication → URL Configuration: add `http://localhost:5173` to Redirect URLs. After the
+   first deploy, set Site URL to the Vercel URL and add it to Redirect URLs too.
+5. Connect button (or Project Settings → API Keys): copy the Project URL and the
+   anon / publishable key into `.env.local`. Never use the `service_role` / secret key anywhere
+   in this project.
+
+### Checking isolation
+
+Create two throwaway users (Authentication → Users → Add user), put their credentials in
+`.env.local` as `RLS_USER_A_EMAIL`, `RLS_USER_A_PASSWORD`, `RLS_USER_B_EMAIL`,
+`RLS_USER_B_PASSWORD`, then:
+
+```bash
+npm run rls-check
+```
+
+User A creates a row in every table; user B then tries to select, update, delete and forge
+them, and a signed-out client tries to read. The script removes its rows afterwards and exits
+non-zero if any check fails.
+
+## Deploy to Vercel (free)
+
+Build command `npm run build`, output directory `dist`. `vercel.json` rewrites every path to
+`index.html` so client-side routes survive a refresh.
+
+**Option A, from GitHub (auto-deploys on every push)**
+
+1. vercel.com → Add New… → Project → Import Git Repository → pick this repo.
+2. Framework preset: Vite. Before deploying, open Environment Variables and add
+   `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` (same values as `.env.local`).
+3. Deploy.
+
+**Option B, from the terminal**
+
+```bash
+npx vercel          # first run links the project and makes a preview deploy
+npx vercel env add VITE_SUPABASE_URL
+npx vercel env add VITE_SUPABASE_ANON_KEY
+npx vercel --prod
+```
+
+`VITE_` variables are baked in at build time: after adding or changing them, redeploy.
+
+**Afterwards**: in Supabase → Authentication → URL Configuration, set Site URL to the final
+Vercel URL and add it to Redirect URLs.
+
+## Install on a phone
+
+- **iPhone**: open the site in Safari → Share → **Add to Home Screen**. It then opens full
+  screen like an app. (Vibration at the end of the rest timer is not available on iOS; the beep
+  and the on-screen timer are.)
+- **Android**: Chrome → menu → Install app / Add to Home screen.
+
+## Offline behaviour
+
+- The active workout is a draft in the browser's storage, rewritten on every input. Closing the
+  tab, locking the phone or losing signal does not lose it.
+- Completed sets are sent to Supabase as soon as they are checked. Offline they wait in a queue
+  that is flushed when the connection returns, on app start and every 20 seconds. The small
+  indicator on the workout screen shows saved / pending / offline.
+- Saved workouts, custom exercises and your last sets are cached so a workout can be started and
+  logged without signal. The daily log keeps typed values until they can be saved.
+- Other pages need a connection to load fresh data and show an offline banner without one.
+
+## Backup
+
+Profile → Data → **Tüm verimi JSON olarak indir** downloads every row of your account in one
+file. Keep a copy now and then: the Supabase free plan has no automatic backups you can restore
+yourself, and a free project is paused after about a week without activity (it can be resumed
+from the dashboard; data is kept).
+
+**JSON içe aktar** merges such a file back into the signed-in account. Daily logs, sets and
+cardio can also be downloaded as CSV.
+
+## Project layout
+
+```
+src/api/        Supabase calls as plain functions (one file per area)
+src/auth/       session provider, route guards, profile cache
+src/lib/        calc.ts (all formulas), dates, numbers, diet helpers, CSV
+src/data/       static exercise library, supplement seed list
+src/i18n/       tr.ts and en.ts with identical keys (a missing key fails the build)
+src/workout/    draft, offline queue, templates, set and exercise components
+src/nutrition/  daily form, supplements, weight card
+src/cardio/     cardio form and statistics
+src/progress/   chart series and sections
+src/pages/      one file per route
+supabase/migrations/0001_init.sql   tables, RLS policies, delete_my_account()
+scripts/rls-check.ts                cross-user isolation check
+```
 
 ## Decisions
 
@@ -116,3 +234,21 @@ npm run dev                  # http://localhost:5173
   re-owned by the signed-in account; nothing is deleted and the profile is left alone.
 - **CSV files** start with a UTF-8 BOM so Excel shows Turkish characters correctly.
 - **Deleting the account** also removes that user's local data (draft, queue, caches) on the device.
+- **App updates ask first**: the spec lists `autoUpdate`, which reloads the page by itself. The
+  service worker is registered in `prompt` mode instead: a "Güncelleme var" toast appears and the
+  new version takes over when you tap "Yenile", so a reload never lands in the middle of a set.
+- **Forgot password** is routed only when `VITE_EMAIL_ENABLED=true`; the reset link signs the user
+  in and lands on the profile page, where the password can be changed.
+
+## Roadmap (not built)
+
+- Free custom SMTP (e.g. Resend or Brevo) → email confirmation and password reset
+- CAPTCHA on sign-up (Cloudflare Turnstile via Supabase Auth)
+- Food search and barcode scanning via Open Food Facts
+- Plate calculator for barbell lifts
+- Heart-rate zones from max HR
+- Opt-in sharing of a saved workout with a friend via link (never automatic)
+- Private progress photos (Supabase Storage)
+- Supplement reminders (Web Push)
+- CSV import from Hevy / Strong
+- Deload week flag
