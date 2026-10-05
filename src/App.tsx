@@ -5,6 +5,7 @@ import { Layout } from './components/Layout'
 import { FullScreen, Message } from './components/ui'
 import { useT } from './i18n'
 import { ActiveWorkoutPage } from './pages/ActiveWorkoutPage'
+import { CardioPage } from './pages/CardioPage'
 import { ExerciseHistoryPage } from './pages/ExerciseHistoryPage'
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage'
 import { LoginPage } from './pages/LoginPage'
@@ -56,7 +57,7 @@ export default function App() {
           <Route path="workout/templates" element={<TemplatesPage />} />
           <Route path="workout/templates/:id" element={<TemplateEditPage />} />
           <Route path="nutrition" element={<NutritionPage />} />
-          <Route path="cardio" element={<SectionPage title="nav.cardio" empty="cardio.empty" />} />
+          <Route path="cardio" element={<CardioPage />} />
           <Route
             path="progress"
             element={<SectionPage title="nav.progress" empty="progress.empty" />}

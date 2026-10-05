@@ -4,8 +4,9 @@ Multi-user workout, nutrition and cardio tracker. Vite + React + TypeScript on V
 Supabase (Free) for accounts and Postgres. Your data lives in Supabase, so logging in from any
 device brings your whole archive with you.
 
-Status: phases 1–6 of 12 are built (scaffold, TR/EN, database schema, accounts, onboarding,
-exercise library, calculations, workout logging with offline draft and sync queue, saved workouts and weekly plan, nutrition log and supplements).
+Status: phases 1–7 of 12 are built (scaffold, TR/EN, database schema, accounts, onboarding,
+exercise library, calculations, workout logging with offline draft and sync queue, saved workouts and weekly plan, nutrition log and supplements,
+cardio and steps).
 This README is completed in phase 12.
 
 ## Local setup
@@ -89,3 +90,9 @@ npm run dev                  # http://localhost:5173
   there is no average yet) with the first weigh-in on or after the phase's start date.
 - **Supplement servings**: caffeine and counted macros scale with the logged dose relative to the
   supplement's default dose. A streak is not broken by today not being logged yet.
+- **Cardio distances**: rowing and swimming are typed in metres, everything else in km; all are
+  stored as km. Speed is typed in the profile's unit (km/h or mph) and stored as km/h.
+- **Cardio kcal**: the machine's number is stored as entered. Otherwise the estimate uses the most
+  recent weigh-in of the last 60 days and is flagged; repeating or editing such a session
+  re-estimates instead of treating the old estimate as entered.
+- **Steps** are stored in the day's log (`daily_logs.steps`); the step goal lives on the profile.
