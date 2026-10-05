@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom'
+import { useUpdateProfile } from '../auth/useProfile'
 import { useT } from '../i18n'
 import { LangSwitch } from './LangSwitch'
 
 export function Header() {
   const t = useT()
+  const updateProfile = useUpdateProfile()
 
   return (
     <header className="border-b border-border bg-surface pt-[env(safe-area-inset-top)]">
@@ -12,7 +14,8 @@ export function Header() {
           {t('app.name')}
         </Link>
         <div className="flex items-center gap-2">
-          <LangSwitch />
+          {/* Signed in: the choice follows the account to other devices. */}
+          <LangSwitch onChange={(language) => updateProfile.mutate({ language })} />
           <Link
             to="/profile"
             aria-label={t('nav.profile')}
