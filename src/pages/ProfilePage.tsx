@@ -19,6 +19,9 @@ export function ProfilePage() {
         <p className="truncate text-sm text-muted">@{profile?.username}</p>
         <p className="truncate text-sm text-muted">{user?.email}</p>
       </Card>
+      <Link to="/profile/supplements" className="flex min-h-11 items-center text-accent">
+        {t('sup.title')}
+      </Link>
       <Link to="/privacy" className="flex min-h-11 items-center text-accent">
         {t('profile.privacy')}
       </Link>

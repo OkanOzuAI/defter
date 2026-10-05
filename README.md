@@ -4,8 +4,8 @@ Multi-user workout, nutrition and cardio tracker. Vite + React + TypeScript on V
 Supabase (Free) for accounts and Postgres. Your data lives in Supabase, so logging in from any
 device brings your whole archive with you.
 
-Status: phases 1–5 of 12 are built (scaffold, TR/EN, database schema, accounts, onboarding,
-exercise library, calculations, workout logging with offline draft and sync queue, saved workouts and weekly plan).
+Status: phases 1–6 of 12 are built (scaffold, TR/EN, database schema, accounts, onboarding,
+exercise library, calculations, workout logging with offline draft and sync queue, saved workouts and weekly plan, nutrition log and supplements).
 This README is completed in phase 12.
 
 ## Local setup
@@ -80,3 +80,12 @@ npm run dev                  # http://localhost:5173
   are only reported at a weight that was used before.
 - **Saved workouts are cached on the device** so one can be started without signal; the copy is
   removed on logout. The workout draft and the unsent queue are kept on logout on purpose.
+- **Daily log autosave**: fields save about a second after typing stops. Unsaved text is kept on
+  the device per day and sent when the connection returns; an unreadable number stays in the form
+  and is not saved.
+- **Salt first**: salt (g) and sodium (mg) are two inputs for the same stored value (`sodium_mg`);
+  typing one fills the other. The salt target is derived from the sodium target.
+- **"Since phase start"** compares the current trend (7-day average, or the latest weigh-in when
+  there is no average yet) with the first weigh-in on or after the phase's start date.
+- **Supplement servings**: caffeine and counted macros scale with the logged dose relative to the
+  supplement's default dose. A streak is not broken by today not being logged yet.

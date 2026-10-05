@@ -122,3 +122,21 @@ export function weekdayNames(lang: Lang, format: 'short' | 'long' = 'short'): st
     formatDate(addDays(monday, i), lang, { weekday: format }),
   )
 }
+
+/** Current wall-clock time as "HH:MM" in the active timezone. */
+export function nowTime(timezone: string = activeTimezone): string {
+  return new Intl.DateTimeFormat('en-GB', {
+    timeZone: timezone,
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  }).format(new Date())
+}
+
+/** First and last day of the month containing `date`. */
+export function monthBounds(date: DateStr): { first: DateStr; last: DateStr } {
+  const [year, month] = date.split('-').map(Number)
+  const first = toDateStr(year, month, 1)
+  const nextMonth = month === 12 ? toDateStr(year + 1, 1, 1) : toDateStr(year, month + 1, 1)
+  return { first, last: addDays(nextMonth, -1) }
+}

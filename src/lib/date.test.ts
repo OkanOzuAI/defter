@@ -6,6 +6,7 @@ import {
   diffDays,
   formatDate,
   isDateStr,
+  monthBounds,
   startOfWeek,
   weekday,
 } from './date'
@@ -55,6 +56,14 @@ describe('date arithmetic', () => {
     expect(isDateStr('2026-10-06')).toBe(true)
     expect(isDateStr('2026-02-30')).toBe(false)
     expect(isDateStr('2026-1-1')).toBe(false)
+  })
+})
+
+describe('monthBounds', () => {
+  it('finds the first and last day of a month', () => {
+    expect(monthBounds('2026-10-06')).toEqual({ first: '2026-10-01', last: '2026-10-31' })
+    expect(monthBounds('2028-02-10')).toEqual({ first: '2028-02-01', last: '2028-02-29' })
+    expect(monthBounds('2026-12-31')).toEqual({ first: '2026-12-01', last: '2026-12-31' })
   })
 })
 

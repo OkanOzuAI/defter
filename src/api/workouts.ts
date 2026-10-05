@@ -136,3 +136,14 @@ export async function getExerciseHistory(exerciseIds: string[], until: DateStr):
   if (error) throw error
   return data
 }
+
+/** Dates that have a workout session, to tell training days from rest days. */
+export async function getSessionDates(from: DateStr, to: DateStr): Promise<DateStr[]> {
+  const { data, error } = await supabase
+    .from('workout_sessions')
+    .select('date')
+    .gte('date', from)
+    .lte('date', to)
+  if (error) throw error
+  return [...new Set(data.map((row) => row.date as DateStr))]
+}

@@ -9,12 +9,14 @@ import { ExerciseHistoryPage } from './pages/ExerciseHistoryPage'
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage'
 import { LoginPage } from './pages/LoginPage'
 import { NotFoundPage } from './pages/NotFoundPage'
+import { NutritionPage } from './pages/NutritionPage'
 import { OnboardingPage } from './pages/OnboardingPage'
 import { PrivacyPage } from './pages/PrivacyPage'
 import { ProfilePage } from './pages/ProfilePage'
 import { RegisterPage } from './pages/RegisterPage'
 import { SectionPage } from './pages/SectionPage'
 import { SessionPage } from './pages/SessionPage'
+import { SupplementsPage } from './pages/SupplementsPage'
 import { TemplateEditPage } from './pages/TemplateEditPage'
 import { TemplatesPage } from './pages/TemplatesPage'
 import { WorkoutPage } from './pages/WorkoutPage'
@@ -53,16 +55,14 @@ export default function App() {
           <Route path="workout/exercise/:id" element={<ExerciseHistoryPage />} />
           <Route path="workout/templates" element={<TemplatesPage />} />
           <Route path="workout/templates/:id" element={<TemplateEditPage />} />
-          <Route
-            path="nutrition"
-            element={<SectionPage title="nav.nutrition" empty="nutrition.empty" />}
-          />
+          <Route path="nutrition" element={<NutritionPage />} />
           <Route path="cardio" element={<SectionPage title="nav.cardio" empty="cardio.empty" />} />
           <Route
             path="progress"
             element={<SectionPage title="nav.progress" empty="progress.empty" />}
           />
           <Route path="profile" element={<ProfilePage />} />
+          <Route path="profile/supplements" element={<SupplementsPage />} />
         </Route>
       </Route>
 

@@ -60,3 +60,90 @@ export type DailyLog = {
 export type SupplementUnit = 'g' | 'mg' | 'mcg' | 'IU' | 'scoop' | 'capsule' | 'tablet' | 'ml'
 export type SupplementTiming =
   'morning' | 'pre_workout' | 'post_workout' | 'with_meal' | 'evening' | 'any'
+
+export const SUPPLEMENT_UNITS: SupplementUnit[] = [
+  'g',
+  'mg',
+  'mcg',
+  'IU',
+  'scoop',
+  'capsule',
+  'tablet',
+  'ml',
+]
+export const SUPPLEMENT_TIMINGS: SupplementTiming[] = [
+  'morning',
+  'pre_workout',
+  'post_workout',
+  'with_meal',
+  'evening',
+  'any',
+]
+
+export type Macros = { kcal?: number; protein?: number; carbs?: number; fat?: number }
+
+export type Supplement = {
+  id: string
+  user_id: string
+  name: string
+  dose: number | null
+  unit: SupplementUnit
+  timing: SupplementTiming
+  active: boolean
+  position: number
+  daily_max: number | null
+  caffeine_mg: number | null
+  /** Per default serving (the `dose` above). */
+  macros: Macros | null
+  count_macros: boolean
+}
+
+export type SupplementLog = {
+  id: string
+  user_id: string
+  date: DateStr
+  supplement_id: string
+  dose: number | null
+  /** "HH:MM" or "HH:MM:SS", local time. */
+  time: string | null
+}
+
+export type DietPhaseType = 'cut' | 'maintenance' | 'reverse' | 'bulk'
+
+export type DietPhase = {
+  id: string
+  user_id: string
+  type: DietPhaseType
+  start_date: DateStr
+  end_date: DateStr | null
+  kcal_training: number | null
+  kcal_rest: number | null
+  protein: number | null
+  carbs: number | null
+  fat: number | null
+  protein_rest: number | null
+  carbs_rest: number | null
+  fat_rest: number | null
+  weekly_kcal_step: number | null
+  target_weekly_change_pct: number | null
+}
+
+export type CardioSession = {
+  id: string
+  user_id: string
+  date: DateStr
+  type: string
+  duration_min: number | null
+  distance_km: number | null
+  speed_kmh: number | null
+  incline_pct: number | null
+  level: number | null
+  watts: number | null
+  avg_hr: number | null
+  max_hr: number | null
+  kcal: number | null
+  kcal_estimated: boolean
+  intensity: number | null
+  details: Record<string, number>
+  note: string | null
+}
