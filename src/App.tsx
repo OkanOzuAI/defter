@@ -4,6 +4,8 @@ import { PublicOnly, RequireAuth } from './auth/guards'
 import { Layout } from './components/Layout'
 import { FullScreen, Message } from './components/ui'
 import { useT } from './i18n'
+import { ActiveWorkoutPage } from './pages/ActiveWorkoutPage'
+import { ExerciseHistoryPage } from './pages/ExerciseHistoryPage'
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage'
 import { LoginPage } from './pages/LoginPage'
 import { NotFoundPage } from './pages/NotFoundPage'
@@ -12,6 +14,8 @@ import { PrivacyPage } from './pages/PrivacyPage'
 import { ProfilePage } from './pages/ProfilePage'
 import { RegisterPage } from './pages/RegisterPage'
 import { SectionPage } from './pages/SectionPage'
+import { SessionPage } from './pages/SessionPage'
+import { WorkoutPage } from './pages/WorkoutPage'
 
 export default function App() {
   const t = useT()
@@ -41,10 +45,10 @@ export default function App() {
       <Route element={<RequireAuth />}>
         <Route element={<Layout />}>
           <Route index element={<SectionPage title="nav.today" empty="today.empty" />} />
-          <Route
-            path="workout"
-            element={<SectionPage title="nav.workout" empty="workout.empty" />}
-          />
+          <Route path="workout" element={<WorkoutPage />} />
+          <Route path="workout/active" element={<ActiveWorkoutPage />} />
+          <Route path="workout/session/:id" element={<SessionPage />} />
+          <Route path="workout/exercise/:id" element={<ExerciseHistoryPage />} />
           <Route
             path="nutrition"
             element={<SectionPage title="nav.nutrition" empty="nutrition.empty" />}

@@ -47,19 +47,24 @@ type FieldProps = {
 }
 
 export function Field({ label, hint, error, optional, children }: FieldProps) {
+  // Hint and error sit outside the <label> so the control's name is just the label text.
   return (
-    <label className="block">
-      <span className="mb-1.5 flex items-baseline justify-between gap-2 text-sm text-muted">
-        <span>{label}</span>
-        {optional && <span className="text-xs">{optional}</span>}
-      </span>
-      {children}
+    <div>
+      <label className="block">
+        <span className="mb-1.5 flex items-baseline justify-between gap-2 text-sm text-muted">
+          <span>{label}</span>
+          {optional && <span className="text-xs">{optional}</span>}
+        </span>
+        {children}
+      </label>
       {error ? (
-        <span className="mt-1.5 block text-sm text-danger">{error}</span>
+        <p role="alert" className="mt-1.5 text-sm text-danger">
+          {error}
+        </p>
       ) : (
-        hint && <span className="mt-1.5 block text-xs text-muted">{hint}</span>
+        hint && <p className="mt-1.5 text-xs text-muted">{hint}</p>
       )}
-    </label>
+    </div>
   )
 }
 

@@ -4,7 +4,8 @@ Multi-user workout, nutrition and cardio tracker. Vite + React + TypeScript on V
 Supabase (Free) for accounts and Postgres. Your data lives in Supabase, so logging in from any
 device brings your whole archive with you.
 
-Status: phases 1–2 of 12 are built (scaffold, TR/EN, database schema, accounts, onboarding).
+Status: phases 1–4 of 12 are built (scaffold, TR/EN, database schema, accounts, onboarding,
+exercise library, calculations, workout logging with offline draft and sync queue).
 This README is completed in phase 12.
 
 ## Local setup
@@ -53,3 +54,20 @@ npm run dev                  # http://localhost:5173
 - **Offline profile**: the last loaded profile is cached on the device so the app still opens
   without signal; it is cleared on logout.
 - **Timezone**: taken from the browser at onboarding, falling back to Europe/Istanbul.
+- **Hard sets for one-sided work**: a set logged for L or R only counts as half a set per muscle,
+  so an L + R pair counts once.
+- **Adaptive TDEE trend**: the "trend weight change" is the least-squares slope of the weigh-ins in
+  the 21-day window (kg/day × 7700), which is the spec's formula per day and is robust to one odd
+  morning.
+- **Cardio MET values**: 2011 Compendium. Where it lists a single value for a type (elliptical,
+  stair machine, circuit/HIIT) that value is "moderate" and low/high are ×0.8 / ×1.2. Perceived
+  intensity 1–3 = low, 4–6 or empty = moderate, 7–10 = high.
+- **Only completed sets are stored**: open rows are scratch space in the draft. Tapping ✓ on an
+  untouched row accepts the greyed-out values shown in it (last time's, or the left side just done).
+- **Sync**: each completed set is upserted by its client UUID as soon as it is checked; offline it
+  waits in a localStorage queue that is flushed on the `online` event, on app start and every 20 s.
+- **Editing a past session** is not synced live: changes are sent when you save, so cancel cancels.
+- **Unfinished sessions** (started on another device, never saved) appear in history marked
+  "Tamamlanmadı / Not finished" rather than being hidden.
+- **Supersets**: the rest timer starts after the last exercise of the group, not after each one.
+- **Bar weights**: barbell 20 kg, EZ bar 10, trap bar 25, safety bar 30, Smith 0 (not logged).

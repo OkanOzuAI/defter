@@ -13,3 +13,18 @@ export async function saveDailyLog(
     .upsert({ user_id, date, ...patch }, { onConflict: 'user_id,date' })
   if (error) throw error
 }
+
+const COLUMNS =
+  'date,weight,calories,protein,carbs,fat,fiber,sodium_mg,water_l,sleep_h,steps,energy,note'
+
+/** Daily logs between two dates (inclusive), oldest first. */
+export async function getDailyLogs(from: DateStr, to: DateStr): Promise<DailyLog[]> {
+  const { data, error } = await supabase
+    .from('daily_logs')
+    .select(COLUMNS)
+    .gte('date', from)
+    .lte('date', to)
+    .order('date')
+  if (error) throw error
+  return data
+}
