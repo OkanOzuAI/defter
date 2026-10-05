@@ -407,6 +407,7 @@ export const en: Dict = {
   'sup.noneToday':
     'Nothing logged for this day yet. Pick one from the list, type the amount, add it.',
   'sup.remove': 'Remove',
+  'sup.noneShort': 'No supplements logged for this day.',
   'sup.manage': 'Manage supplements',
   'sup.caffeine': 'Caffeine today: {mg} mg',
   'sup.overMax': 'Daily max exceeded ({max} {unit})',

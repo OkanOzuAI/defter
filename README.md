@@ -17,7 +17,7 @@ Every row belongs to one user and Postgres Row Level Security keeps it private t
   and separate left/right sets. Rest timer, glossary, swap alternatives, supersets. Saved
   workouts with a weekly plan; start one "with values" or "exercises only". Summary with PRs.
 - **Beslenme**: current weight and calories card, daily log (weight, macros, fiber, salt/sodium,
-  water, sleep, energy), targets from the active diet phase, supplements with dose and time.
+  water, sleep, energy), targets from the active diet phase.
 - **Kardiyo**: steps with goal and streak, cardio sessions with type-specific fields, kcal
   estimates, presets, weekly summary.
 - **İlerleme**: weight and TDEE trends, weekly nutrition, per-exercise strength, weekly hard sets
@@ -242,9 +242,11 @@ scripts/rls-check.ts                cross-user isolation check
 - **Forgot password** is routed only when `VITE_EMAIL_ENABLED=true`; the reset link signs the user
   in and lands on the profile page, where the password can be changed.
 - **Supplements are a log, not a checklist** (changed after first use, at the user's request): on
-  Bugün and Beslenme you pick a supplement from the full list, type the amount actually taken and
+  Bugün you pick a supplement from the full list, type the amount actually taken and
   add it. Nothing is assumed to be taken daily; the same supplement can be added more than once.
-  The default dose only prefills the amount field.
+  The default dose only prefills the amount field. Beslenme shows the selected day's entries as a
+  one-line summary instead of a second copy of the list, so supplements are entered in one place
+  (today only; past days are read-only).
 
 ## Roadmap (not built)
 

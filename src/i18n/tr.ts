@@ -403,6 +403,7 @@ export const tr = {
   'sup.addLog': 'Ekle',
   'sup.noneToday': 'Bu gün için henüz takviye girilmedi. Listeden seç, miktarını yaz, ekle.',
   'sup.remove': 'Kaldır',
+  'sup.noneShort': 'Bu gün için takviye girilmedi.',
   'sup.manage': 'Takviyeleri yönet',
   'sup.caffeine': 'Günlük kafein: {mg} mg',
   'sup.overMax': 'Günlük üst sınır aşıldı ({max} {unit})',

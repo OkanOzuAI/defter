@@ -1,10 +1,11 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import { useProfile } from '../auth/useProfile'
-import { Card } from '../components/ui'
 import { useLang, useT } from '../i18n'
 import { addDays, formatDate, today as todayDate } from '../lib/date'
 import { activePhase, dayTargets, supplementMacros } from '../lib/diet'
+import { formatNumber } from '../lib/number'
 import { DailyForm } from '../nutrition/DailyForm'
 import {
   useCardioSessions,
@@ -15,7 +16,6 @@ import {
   useTrainingDates,
 } from '../nutrition/hooks'
 import { MonthCalendar } from '../nutrition/MonthCalendar'
-import { SupplementLogger } from '../nutrition/SupplementLogger'
 import type { NumberField } from '../nutrition/useDailyForm'
 import { WeightCaloriesCard } from '../nutrition/WeightCaloriesCard'
 
@@ -147,10 +147,29 @@ export function NutritionPage() {
         </div>
       </section>
 
-      <Card>
-        <h2 className="mb-1 font-medium">{t('sup.title')}</h2>
-        <SupplementLogger userId={userId} date={date} />
-      </Card>
+      {/* Supplements are logged on Bugün; here the day's entries are only summarised. */}
+      <Link
+        to="/"
+        className="flex min-h-12 items-center justify-between gap-3 rounded-xl border border-border bg-surface px-4 py-2"
+      >
+        <span className="min-w-0">
+          <span className="block text-sm text-muted">{t('sup.title')}</span>
+          <span className="block text-sm">
+            {supplementLogs.length === 0
+              ? t('sup.noneShort')
+              : supplementLogs
+                  .map((log) => {
+                    const supplement = supplements.find((item) => item.id === log.supplement_id)
+                    if (!supplement) return null
+                    const dose = log.dose === null ? '' : ` ${formatNumber(log.dose, lang, 2)}`
+                    return `${supplement.name}${dose} ${t(`sup.unit.${supplement.unit}`)}`
+                  })
+                  .filter(Boolean)
+                  .join(' · ')}
+          </span>
+        </span>
+        {date === today && <span className="shrink-0 text-sm text-accent">{t('nav.today')} ›</span>}
+      </Link>
     </div>
   )
 }
