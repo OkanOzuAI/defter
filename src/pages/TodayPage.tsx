@@ -16,7 +16,7 @@ import {
   useSupplements,
   useTrainingDates,
 } from '../nutrition/hooks'
-import { SupplementChecklist } from '../nutrition/SupplementChecklist'
+import { SupplementLogger } from '../nutrition/SupplementLogger'
 import { CopyModeSheet } from '../workout/CopyModeSheet'
 import { newDraft } from '../workout/draft'
 import { startDraft, useDraft } from '../workout/draftStore'
@@ -193,7 +193,7 @@ export function TodayPage() {
 
       <Card>
         <h2 className="mb-1 font-medium">{t('sup.title')}</h2>
-        <SupplementChecklist userId={userId} date={today} />
+        <SupplementLogger userId={userId} date={today} />
       </Card>
 
       {starting && (

@@ -15,7 +15,7 @@ import {
   useTrainingDates,
 } from '../nutrition/hooks'
 import { MonthCalendar } from '../nutrition/MonthCalendar'
-import { SupplementChecklist } from '../nutrition/SupplementChecklist'
+import { SupplementLogger } from '../nutrition/SupplementLogger'
 import type { NumberField } from '../nutrition/useDailyForm'
 import { WeightCaloriesCard } from '../nutrition/WeightCaloriesCard'
 
@@ -149,7 +149,7 @@ export function NutritionPage() {
 
       <Card>
         <h2 className="mb-1 font-medium">{t('sup.title')}</h2>
-        <SupplementChecklist userId={userId} date={date} editable />
+        <SupplementLogger userId={userId} date={date} />
       </Card>
     </div>
   )

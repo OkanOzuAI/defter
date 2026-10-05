@@ -12,7 +12,7 @@ Every row belongs to one user and Postgres Row Level Security keeps it private t
 ## What it does
 
 - **Bugün**: diet phase and day, today's planned workout, weight trend, calories, protein, salt,
-  water, steps, cardio, supplement checklist.
+  water, steps, cardio, supplement log.
 - **Antrenman**: log sets with kg, reps, RIR (or RPE), failure chips, technique tags, set types
   and separate left/right sets. Rest timer, glossary, swap alternatives, supersets. Saved
   workouts with a weekly plan; start one "with values" or "exercises only". Summary with PRs.
@@ -241,6 +241,10 @@ scripts/rls-check.ts                cross-user isolation check
   new version takes over when you tap "Yenile", so a reload never lands in the middle of a set.
 - **Forgot password** is routed only when `VITE_EMAIL_ENABLED=true`; the reset link signs the user
   in and lands on the profile page, where the password can be changed.
+- **Supplements are a log, not a checklist** (changed after first use, at the user's request): on
+  Bugün and Beslenme you pick a supplement from the full list, type the amount actually taken and
+  add it. Nothing is assumed to be taken daily; the same supplement can be added more than once.
+  The default dose only prefills the amount field.
 
 ## Roadmap (not built)
 
