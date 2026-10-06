@@ -142,8 +142,7 @@ export function DailyForm(props: Props) {
       </div>
       <p className="-mt-2 text-xs text-muted">{t('nut.saltHint')}</p>
 
-      <div className="grid grid-cols-3 gap-3">
-        {field('fiber', 'nut.f.fiber', 'unit.g', profile?.fiber_target_g)}
+      <div className="grid grid-cols-2 gap-3">
         {field('water_l', 'nut.f.water', 'unit.l', profile?.water_target_l)}
         {field('sleep_h', 'nut.f.sleep', 'unit.h', profile?.sleep_target_h)}
       </div>

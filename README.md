@@ -16,7 +16,7 @@ Every row belongs to one user and Postgres Row Level Security keeps it private t
 - **Antrenman**: log sets with kg, reps, RIR (or RPE), failure chips, technique tags, set types
   and separate left/right sets. Rest timer, glossary, swap alternatives, supersets. Saved
   workouts with a weekly plan; start one "with values" or "exercises only". Summary with PRs.
-- **Beslenme**: current weight and calories card, daily log (weight, macros, fiber, salt/sodium,
+- **Beslenme**: current weight and calories card, daily log (weight, macros, salt/sodium,
   water, sleep, energy), targets from the active diet phase.
 - **Kardiyo**: steps with goal and streak, cardio sessions with type-specific fields, kcal
   estimates, presets, weekly summary.
@@ -266,6 +266,8 @@ scripts/rls-check.ts                cross-user isolation check
   Delete. In a session only the next set shows its RIR and failure controls; other open sets are
   one line and open on focus or by tapping the set number. Saved-workout cards show Start, with
   edit / duplicate / delete / days behind "⋯".
+- **Fiber is not shown** (removed at the owner's request). The `fiber` and `fiber_target_g` columns
+  stay in the database and in exports, so nothing already entered is lost.
 
 ## Roadmap (not built)
 

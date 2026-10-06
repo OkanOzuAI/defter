@@ -23,7 +23,6 @@ const NUMBERS = [
   ['water_target_l', 'set.waterTarget', 0, 20, false],
   ['step_goal', 'set.stepsTarget', 0, 200000, true],
   ['sleep_target_h', 'set.sleepTarget', 0, 24, false],
-  ['fiber_target_g', 'set.fiberTarget', 0, 500, false],
 ] as const
 type NumberKey = (typeof NUMBERS)[number][0]
 // Rest times always have a value; every other number may be left empty.
@@ -245,7 +244,6 @@ export function SettingsForm({ profile }: { profile: Profile }) {
           {number('water_target_l')}
           {number('step_goal', false)}
           {number('sleep_target_h')}
-          {number('fiber_target_g')}
         </div>
       </Card>
 
