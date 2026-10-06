@@ -278,6 +278,8 @@ chest('Machine Incline Chest Press', 'machine', 'incline_press', { angle: 'incli
 chest('Machine Decline Chest Press', 'machine', 'decline_press', { angle: 'decline' })
 chest('Iso-Lateral Chest Press', 'plate_loaded', 'horizontal_press')
 chest('Iso-Lateral Incline Press', 'plate_loaded', 'incline_press', { angle: 'incline' })
+chest('Plate-Loaded Chest Press', 'plate_loaded', 'horizontal_press')
+chest('Chest Fly Machine', 'machine', 'chest_fly')
 chest('Pec Deck', 'machine', 'chest_fly')
 chest('Single-Arm Pec Deck', 'machine', 'chest_fly', { uni: true })
 chest('Cable Crossover (High-to-Low)', 'cable', 'chest_fly', { angle: 'high-to-low' })
@@ -306,6 +308,7 @@ shoulders('Single-Arm Landmine Press', 'landmine', 'vertical_press', {
   s: ['triceps', 'chest'],
 })
 shoulders('DB Lateral Raise', 'dumbbell', 'lateral_raise')
+shoulders('Lateral Raise', 'dumbbell', 'lateral_raise')
 shoulders('Seated DB Lateral Raise', 'dumbbell', 'lateral_raise')
 shoulders('Single-Arm Cable Lateral Raise', 'cable', 'lateral_raise', { uni: true })
 shoulders('Cable Y-Raise', 'cable', 'lateral_raise', { s: ['traps', 'rear_delts'] })
@@ -338,6 +341,7 @@ triceps('DB Skull Crusher', 'dumbbell', 'elbow_extension')
 triceps('Rope Pushdown', 'cable', 'elbow_extension', { grip: 'rope' })
 triceps('Straight-Bar Pushdown', 'cable', 'elbow_extension', { grip: 'straight bar' })
 triceps('V-Bar Pushdown', 'cable', 'elbow_extension', { grip: 'V-bar' })
+triceps('Triceps Pushdown', 'cable', 'elbow_extension')
 triceps('Single-Arm Reverse-Grip Pushdown', 'cable', 'elbow_extension', {
   grip: 'reverse',
   uni: true,
@@ -361,6 +365,7 @@ back('Weighted Pull-Up', 'bodyweight', 'vertical_pull')
 // The logged weight is the assistance, so it is not added to body weight.
 back('Assisted Pull-Up Machine', 'machine', 'vertical_pull')
 back('Wide-Grip Lat Pulldown', 'cable', 'vertical_pull', { grip: 'wide' })
+back('Lat Pulldown', 'cable', 'vertical_pull')
 back('Close-Grip (V-Bar) Lat Pulldown', 'cable', 'vertical_pull', { grip: 'V-bar' })
 back('Neutral-Grip Lat Pulldown', 'cable', 'vertical_pull', { grip: 'neutral' })
 back('Reverse-Grip Lat Pulldown', 'cable', 'vertical_pull', { grip: 'underhand' })
@@ -378,6 +383,8 @@ back('Chest-Supported DB Row', 'dumbbell', 'horizontal_pull')
 back('Seal Row', 'barbell', 'horizontal_pull')
 back('Landmine T-Bar Row', 'landmine', 'horizontal_pull')
 back('Chest-Supported T-Bar Row', 'plate_loaded', 'horizontal_pull')
+back('Plate-Loaded Wide-Grip Row', 'plate_loaded', 'horizontal_pull', { grip: 'wide' })
+back('Cable Row', 'cable', 'horizontal_pull')
 back('Seated Cable Row (V-Bar)', 'cable', 'horizontal_pull', { grip: 'V-bar' })
 back('Wide-Grip Seated Cable Row', 'cable', 'horizontal_pull', { grip: 'wide' })
 back('Single-Arm Seated Cable Row', 'cable', 'horizontal_pull', { uni: true })
@@ -417,9 +424,15 @@ biceps('DB Preacher Curl', 'dumbbell', 'curl', { uni: true })
 biceps('Machine Preacher Curl', 'machine', 'curl')
 biceps('Machine Curl', 'machine', 'curl')
 biceps('Straight-Bar Cable Curl', 'cable', 'curl', { grip: 'straight bar' })
+biceps('Cable Curl', 'cable', 'curl')
 biceps('Bayesian Cable Curl', 'cable', 'curl', { uni: true })
 biceps('Rope Hammer Curl', 'cable', 'curl', { grip: 'rope', s: ['forearms'] })
 biceps('Reverse EZ-Bar Curl', 'ez_bar', 'curl', {
+  grip: 'overhand',
+  p: ['forearms'],
+  s: ['biceps'],
+})
+biceps('Reverse Barbell Curl', 'barbell', 'curl', {
   grip: 'overhand',
   p: ['forearms'],
   s: ['biceps'],
@@ -440,6 +453,7 @@ quads('Reverse Hack Squat', 'plate_loaded', 'machine_squat', { p: ['quads', 'glu
 quads('Pendulum Squat', 'plate_loaded', 'machine_squat')
 quads('Belt Squat', 'plate_loaded', 'machine_squat')
 quads('45° Leg Press', 'plate_loaded', 'leg_press', { inc: 5 })
+quads('Leg Press', 'plate_loaded', 'leg_press', { inc: 5 })
 quads('Horizontal Leg Press', 'machine', 'leg_press')
 quads('Single-Leg Leg Press', 'plate_loaded', 'leg_press', { uni: true, inc: 5 })
 quads('Goblet Squat', 'dumbbell', 'squat', { load: 'total' })
@@ -456,6 +470,7 @@ quads('Sissy Squat', 'bodyweight', 'knee_extension')
 // --- Legs: hamstrings & glutes ---------------------------------------------
 const posterior = group('hamstrings_glutes')
 posterior('Barbell Romanian Deadlift', 'barbell', 'hip_hinge')
+posterior('Romanian Deadlift', 'barbell', 'hip_hinge')
 posterior('DB Romanian Deadlift', 'dumbbell', 'hip_hinge')
 posterior('Smith Romanian Deadlift', 'smith', 'hip_hinge')
 posterior('Stiff-Leg Deadlift', 'barbell', 'hip_hinge')

@@ -251,6 +251,9 @@ scripts/rls-check.ts                cross-user isolation check
 - **Suggested workouts** (added later, at the owner's request): the saved-workouts page offers five
   ready-made push / pull / legs workouts. This is a deliberate exception to "no default program":
   nothing is added to anyone's account unless they tap "Ekle", and the copy is fully editable.
+  The 11 exercises of that plan that were not in the library under their own names (e.g. Lat
+  Pulldown, Cable Row, Leg Press, Plate-Loaded Chest Press) were added to it, so the library has
+  206 entries rather than the spec's 195.
   Rep ranges live in each exercise's note (a set stores one rep count, not a range); weight and
   reps start empty.
 

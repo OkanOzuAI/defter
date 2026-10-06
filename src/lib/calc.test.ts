@@ -341,7 +341,7 @@ describe('cardio', () => {
 
 describe('exercise library', () => {
   it('has every seeded exercise exactly once', () => {
-    expect(EXERCISES).toHaveLength(195)
+    expect(EXERCISES).toHaveLength(206)
     expect(new Set(EXERCISES.map((e) => e.id)).size).toBe(EXERCISES.length)
     expect(new Set(EXERCISES.map((e) => e.name)).size).toBe(EXERCISES.length)
   })

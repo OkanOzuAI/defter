@@ -11,6 +11,27 @@ describe('suggested workouts', () => {
     }
   })
 
+  it('uses the exercise names of the original plan', () => {
+    const names = new Set(
+      SUGGESTED_WORKOUTS.flatMap((w) => w.lines.map((l) => getLibraryExercise(l.exercise)!.name)),
+    )
+    for (const name of [
+      'Plate-Loaded Chest Press',
+      'Chest Fly Machine',
+      'Lateral Raise',
+      'Triceps Pushdown',
+      'Lat Pulldown',
+      'Plate-Loaded Wide-Grip Row',
+      'Cable Row',
+      'Cable Curl',
+      'Reverse Barbell Curl',
+      'Leg Press',
+      'Romanian Deadlift',
+    ]) {
+      expect(names, name).toContain(name)
+    }
+  })
+
   it('has five separate workouts with unique names', () => {
     expect(SUGGESTED_WORKOUTS.map((w) => w.key)).toEqual([
       'push-chest',
@@ -28,7 +49,7 @@ describe('suggested workouts', () => {
     expect(push).toMatchObject({ name: 'Push (göğüsle başlayan)', weekdays: [1], user_id: 'u' })
     expect(push.items.map((item) => item.sets.length)).toEqual([2, 2, 1, 2, 3, 2, 2])
     expect(push.items[0]).toMatchObject({
-      exercise_id: 'iso-lateral-chest-press',
+      exercise_id: 'plate-loaded-chest-press',
       note: '5–6 tekrar · RIR 1',
     })
     expect(push.items[0].sets[0]).toMatchObject({
