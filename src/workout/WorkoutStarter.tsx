@@ -86,10 +86,10 @@ export function WorkoutStarter({ userId, title }: { userId: string; title: strin
           ))}
         </ul>
       )}
-      <div className="mt-2 flex items-center gap-2 border-t border-border pt-3">
+      <div className="mt-2 border-t border-border pt-3">
         <Button
           variant="secondary"
-          className="flex-1"
+          block
           onClick={() => {
             startDraft(userId, newDraft(today()))
             navigate('/workout/active')
@@ -97,11 +97,13 @@ export function WorkoutStarter({ userId, title }: { userId: string; title: strin
         >
           + {t('workout.startEmpty')}
         </Button>
+        {/* Saved workouts are managed, and ready-made ones added, on their own page. */}
         <Link
           to="/workout/templates"
-          className="flex min-h-11 shrink-0 items-center px-2 text-sm text-accent"
+          className="mt-1 flex min-h-11 items-center justify-between gap-3 text-sm text-accent"
         >
-          {t('tpl.manage')} ›
+          <span>{t('tpl.manage')}</span>
+          <span aria-hidden="true">›</span>
         </Link>
       </div>
 

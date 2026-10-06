@@ -153,7 +153,7 @@ export const tr = {
   'workout.inProgress': 'Devam eden antrenman',
   'workout.resume': 'Devam et',
   'workout.setsDone': '{done} / {total} set tamam',
-  'tpl.manage': 'Düzenle / yeni ekle',
+  'tpl.manage': 'Kayıtlı antrenmanlarım ve önerilen antrenmanlar',
   'workout.history': 'Geçmiş',
   'workout.historyEmpty':
     'Henüz kayıtlı antrenman yok. İlk antrenmanını başlat; bitirince burada görünür.',

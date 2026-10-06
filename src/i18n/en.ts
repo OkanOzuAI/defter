@@ -156,7 +156,7 @@ export const en: Dict = {
   'workout.inProgress': 'Workout in progress',
   'workout.resume': 'Continue',
   'workout.setsDone': '{done} / {total} sets done',
-  'tpl.manage': 'Edit / add new',
+  'tpl.manage': 'My saved workouts and suggested workouts',
   'workout.history': 'History',
   'workout.historyEmpty':
     'No saved workouts yet. Start your first one; it shows up here when you finish.',

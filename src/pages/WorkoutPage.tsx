@@ -33,7 +33,7 @@ export function WorkoutPage() {
       {userId && <WorkoutStarter userId={userId} title={t('today.choose')} />}
       {draft && (
         <Link to="/workout/templates" className="flex min-h-11 items-center text-sm text-accent">
-          {t('tpl.title')} ›
+          {t('tpl.manage')} ›
         </Link>
       )}
 

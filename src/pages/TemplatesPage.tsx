@@ -45,6 +45,8 @@ export function TemplatesPage() {
       {draft && <p className="text-sm text-muted">{t('copy.blocked')}</p>}
       {failed && <p className="text-sm text-danger">{t('common.error')}</p>}
 
+      {userId && templates.data && <SuggestedWorkouts userId={userId} existing={templates.data} />}
+
       {templates.isPending ? (
         <p className="py-6 text-sm text-muted">{t('app.loading')}</p>
       ) : templates.isError ? (
@@ -130,8 +132,6 @@ export function TemplatesPage() {
           </Card>
         ))
       )}
-
-      {userId && templates.data && <SuggestedWorkouts userId={userId} existing={templates.data} />}
 
       <Button variant="secondary" block onClick={() => navigate('/workout/templates/new')}>
         + {t('tpl.new')}
