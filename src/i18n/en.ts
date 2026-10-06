@@ -513,8 +513,8 @@ export const en: Dict = {
   'cardio.t.hiit': 'HIIT',
   'cardio.t.other': 'Other',
 
-  'today.planned': "Today's plan",
-  'today.noPlan': 'No workout planned for today.',
+  'today.choose': 'Which workout are you doing today?',
+  'today.noSaved': 'No saved workouts yet. Start an empty one, or add one to your saved workouts.',
   'today.weightAvg': 'Weight (7-day avg)',
   'today.weightLatest': 'Weight (latest)',
   'today.salt': 'Salt',

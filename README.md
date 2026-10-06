@@ -11,7 +11,7 @@ Every row belongs to one user and Postgres Row Level Security keeps it private t
 
 ## What it does
 
-- **Bugün**: diet phase and day, today's planned workout, weight trend, calories, protein, salt,
+- **Bugün**: diet phase and day, a "which workout today?" chooser, weight trend, calories, protein, salt,
   water, steps, cardio, supplement log.
 - **Antrenman**: log sets with kg, reps, RIR (or RPE), failure chips, technique tags, set types
   and separate left/right sets. Rest timer, glossary, swap alternatives, supersets. Saved
@@ -256,6 +256,11 @@ scripts/rls-check.ts                cross-user isolation check
   206 entries rather than the spec's 195.
   Rep ranges live in each exercise's note (a set stores one rep count, not a range); weight and
   reps start empty.
+- **No workout is assigned to a day for you** (changed at the owner's request): Bugün asks "Bugün
+  hangi antrenmanı yapacaksın?" and lists every saved workout to start, instead of announcing a
+  planned one. Suggested workouts are added without weekdays. The weekday toggles on a saved
+  workout remain as the user's own optional note; a workout the user put on today is only listed
+  first.
 
 ## Roadmap (not built)
 

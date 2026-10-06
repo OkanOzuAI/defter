@@ -509,8 +509,9 @@ export const tr = {
   'cardio.t.hiit': 'HIIT',
   'cardio.t.other': 'Diğer',
 
-  'today.planned': 'Bugünün planı',
-  'today.noPlan': 'Bugün için planlı antrenman yok.',
+  'today.choose': 'Bugün hangi antrenmanı yapacaksın?',
+  'today.noSaved':
+    'Henüz kayıtlı antrenmanın yok. Boş bir antrenman başlatabilir ya da kayıtlı antrenmanlarına bir tane ekleyebilirsin.',
   'today.weightAvg': 'Kilo (7 gün ort.)',
   'today.weightLatest': 'Kilo (son tartı)',
   'today.salt': 'Tuz',

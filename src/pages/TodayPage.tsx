@@ -40,7 +40,9 @@ export function TodayPage() {
   const log = logs.find((entry) => entry.date === today)
   const trainingDates = useTrainingDates(userId, today, today)
   const templates = useTemplates(userId).data ?? []
-  const planned = templates.filter((template) => template.weekdays.includes(weekday(today)))
+  // Every saved workout is offered; the ones the user put on this weekday come first.
+  const onToday = (template: TemplateRow) => (template.weekdays.includes(weekday(today)) ? 0 : 1)
+  const choices = [...templates].sort((x, y) => onToday(x) - onToday(y))
   const cardio = useCardioSessions(userId, today, today).data ?? []
   const extra = supplementMacros(
     useSupplementLogs(userId, today, today).data ?? [],
@@ -98,38 +100,53 @@ export function TodayPage() {
       </div>
 
       <Card>
-        <h2 className="mb-2 text-sm text-muted">{t('today.planned')}</h2>
+        <h2 className="mb-2 text-sm text-muted">
+          {t(draft ? 'workout.inProgress' : 'today.choose')}
+        </h2>
         {draft ? (
           <>
-            <p className="font-medium">
-              {draft.name || t('workout.unnamed')} · {t('workout.inProgress')}
-            </p>
+            <p className="font-medium">{draft.name || t('workout.unnamed')}</p>
             <Button block className="mt-3" onClick={() => navigate('/workout/active')}>
               {t('workout.resume')}
             </Button>
           </>
         ) : (
           <>
-            {planned.length === 0 && <p className="text-sm text-muted">{t('today.noPlan')}</p>}
-            {planned.map((template) => (
-              <div key={template.id} className="flex items-center justify-between gap-3 py-1">
-                <p className="min-w-0 truncate font-medium">
-                  {formatDate(today, lang, { weekday: 'long' })} → {template.name}
-                </p>
-                <Button className="shrink-0" onClick={() => setStarting(template)}>
-                  {t('tpl.start')}
-                </Button>
-              </div>
-            ))}
+            {choices.length === 0 ? (
+              <p className="text-sm text-muted">{t('today.noSaved')}</p>
+            ) : (
+              <ul>
+                {choices.map((template) => (
+                  <li
+                    key={template.id}
+                    className="flex items-center justify-between gap-3 border-t border-border py-1.5 first:border-t-0"
+                  >
+                    <span className="min-w-0">
+                      <span className="block truncate font-medium">{template.name}</span>
+                      <span className="block text-xs text-muted">
+                        {t('workout.exercisesCount', { n: template.items.length })}
+                      </span>
+                    </span>
+                    <Button
+                      variant="secondary"
+                      className="shrink-0"
+                      onClick={() => setStarting(template)}
+                    >
+                      {t('tpl.start')}
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            )}
             {trainingDates.has(today) && (
               <p className="mt-1 text-xs text-accent">{t('today.done')}</p>
             )}
             <div className="mt-3 grid grid-cols-2 gap-2">
-              <Button variant="secondary" onClick={() => navigate('/workout/templates')}>
-                {t('tpl.startFrom')}
-              </Button>
               <Button variant="secondary" onClick={startEmpty}>
                 {t('workout.startEmpty')}
+              </Button>
+              <Button variant="ghost" onClick={() => navigate('/workout/templates')}>
+                {t('tpl.title')}
               </Button>
             </div>
           </>

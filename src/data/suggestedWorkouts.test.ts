@@ -46,7 +46,7 @@ describe('suggested workouts', () => {
 
   it('becomes an editable saved workout with the right set counts and effort', () => {
     const push = toTemplate(SUGGESTED_WORKOUTS[0], 'tr', 'u')
-    expect(push).toMatchObject({ name: 'Push (göğüsle başlayan)', weekdays: [1], user_id: 'u' })
+    expect(push).toMatchObject({ name: 'Push (göğüsle başlayan)', weekdays: [], user_id: 'u' })
     expect(push.items.map((item) => item.sets.length)).toEqual([2, 2, 1, 2, 3, 2, 2])
     expect(push.items[0]).toMatchObject({
       exercise_id: 'plate-loaded-chest-press',

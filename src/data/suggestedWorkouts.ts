@@ -27,8 +27,6 @@ type Line = {
 export type SuggestedWorkout = {
   key: string
   name: Record<Lang, string>
-  /** 1 = Monday … 7 = Sunday. */
-  weekdays: number[]
   lines: Line[]
 }
 
@@ -49,7 +47,6 @@ export const SUGGESTED_WORKOUTS: SuggestedWorkout[] = [
   {
     key: 'push-chest',
     name: { tr: 'Push (göğüsle başlayan)', en: 'Push (chest first)' },
-    weekdays: [1],
     lines: [
       line('plate-loaded-chest-press', 2, [5, 6], rir(1)),
       line('smith-low-incline-bench-press', 2, [5, 6], rir(1)),
@@ -63,7 +60,6 @@ export const SUGGESTED_WORKOUTS: SuggestedWorkout[] = [
   {
     key: 'pull-lats',
     name: { tr: 'Pull (lat pulldown ile başlayan)', en: 'Pull (lat pulldown first)' },
-    weekdays: [2],
     lines: [
       line('lat-pulldown', 2, [6, 8], rir1ToFailure),
       line('plate-loaded-wide-grip-row', 3, [6, 8], rir1ToFailure),
@@ -77,7 +73,6 @@ export const SUGGESTED_WORKOUTS: SuggestedWorkout[] = [
   {
     key: 'legs',
     name: { tr: 'Legs (bacak)', en: 'Legs' },
-    weekdays: [3],
     lines: [
       line('leg-press', 2, [6, 8], rir1to2),
       line('smith-squat', 2, [6, 8], rir1to2),
@@ -88,7 +83,6 @@ export const SUGGESTED_WORKOUTS: SuggestedWorkout[] = [
   {
     key: 'push-shoulders',
     name: { tr: 'Push (omuzla başlayan)', en: 'Push (shoulders first)' },
-    weekdays: [5],
     lines: [
       line('machine-shoulder-press', 2, [6, 8], rir(1)),
       line('lateral-raise', 3, [8, 10], failure),
@@ -102,7 +96,6 @@ export const SUGGESTED_WORKOUTS: SuggestedWorkout[] = [
   {
     key: 'pull-legs',
     name: { tr: 'Pull (row ile başlayan) + bacak', en: 'Pull (row first) + legs' },
-    weekdays: [6],
     lines: [
       line('plate-loaded-wide-grip-row', 3, [6, 8], rir1ToFailure),
       line('lat-pulldown', 3, [6, 8], rir1ToFailure),
@@ -170,7 +163,8 @@ export function toTemplate(workout: SuggestedWorkout, lang: Lang, userId: string
     user_id: userId,
     name: workout.name[lang],
     note: null,
-    weekdays: workout.weekdays,
+    // No day is assigned: which workout to do on which day is the user's call.
+    weekdays: [],
     items,
   }
 }
