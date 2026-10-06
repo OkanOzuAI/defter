@@ -184,6 +184,7 @@ export function SessionPage() {
       <div className="space-y-2 pt-2">
         {templateName === null ? (
           <Button
+            variant={template ? 'secondary' : 'primary'}
             block
             disabled={items.length === 0}
             onClick={() => setTemplateName(session.name ?? '')}
@@ -237,19 +238,20 @@ export function SessionPage() {
           </p>
         )}
 
-        <Button
-          variant="secondary"
-          block
-          disabled={Boolean(draft) || items.length === 0}
-          onClick={() => setCopying(true)}
-        >
-          {t('copy.action')}
-        </Button>
-        <Button variant="secondary" block disabled={Boolean(draft)} onClick={edit}>
-          {t('workout.edit')}
-        </Button>
+        <div className="grid grid-cols-2 gap-2">
+          <Button
+            variant="secondary"
+            disabled={Boolean(draft) || items.length === 0}
+            onClick={() => setCopying(true)}
+          >
+            {t('copy.action')}
+          </Button>
+          <Button variant="secondary" disabled={Boolean(draft)} onClick={edit}>
+            {t('workout.edit')}
+          </Button>
+        </div>
         {draft && <p className="text-center text-xs text-muted">{t('workout.editBlocked')}</p>}
-        <Button variant="danger" block onClick={remove}>
+        <Button variant="ghost" block className="text-danger" onClick={remove}>
           {t('workout.delete')}
         </Button>
       </div>

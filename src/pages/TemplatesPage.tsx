@@ -28,6 +28,8 @@ export function TemplatesPage() {
   const save = useSaveTemplate(userId)
   const remove = useDeleteTemplate(userId)
   const [starting, setStarting] = useState<TemplateRow | null>(null)
+  // Which card has its secondary actions (edit, duplicate, delete, days) open.
+  const [open, setOpen] = useState<string | null>(null)
 
   const failed = save.isError || remove.isError
 
@@ -56,57 +58,75 @@ export function TemplatesPage() {
       ) : (
         templates.data.map((template) => (
           <Card key={template.id}>
-            <div className="flex items-baseline justify-between gap-3">
-              <h2 className="min-w-0 truncate font-semibold">{template.name}</h2>
-              <span className="shrink-0 text-sm text-muted">
-                {t('workout.exercisesCount', { n: template.items.length })}
-              </span>
+            <div className="flex items-center gap-2">
+              <div className="min-w-0 flex-1">
+                <h2 className="truncate font-semibold">{template.name}</h2>
+                <p className="text-sm text-muted">
+                  {t('workout.exercisesCount', { n: template.items.length })}
+                </p>
+              </div>
+              <Button
+                className="shrink-0"
+                disabled={Boolean(draft)}
+                onClick={() => setStarting(template)}
+              >
+                {t('tpl.start')}
+              </Button>
+              <button
+                type="button"
+                aria-expanded={open === template.id}
+                aria-label={`${template.name}: ${t('ex.more')}`}
+                onClick={() => setOpen(open === template.id ? null : template.id)}
+                className="size-11 shrink-0 text-xl text-muted"
+              >
+                ⋯
+              </button>
             </div>
             {template.note && <p className="mt-1 text-sm text-muted">{template.note}</p>}
 
-            <p className="mb-1.5 mt-3 text-xs text-muted">{t('tpl.weekdays')}</p>
-            <WeekdayPicker
-              label={t('tpl.weekdays')}
-              value={template.weekdays}
-              onChange={(weekdays) => save.mutate({ ...template, weekdays })}
-            />
-
-            <div className="mt-3 flex flex-wrap gap-2">
-              <Button disabled={Boolean(draft)} onClick={() => setStarting(template)}>
-                {t('tpl.start')}
-              </Button>
-              <Link
-                to={`/workout/templates/${template.id}`}
-                className={`${action} flex items-center`}
-              >
-                {t('tpl.edit')}
-              </Link>
-              <button
-                type="button"
-                className={action}
-                onClick={() =>
-                  save.mutate({
-                    ...template,
-                    id: crypto.randomUUID(),
-                    name: `${template.name} (${t('tpl.copySuffix')})`.slice(0, 80),
-                    weekdays: [],
-                  })
-                }
-              >
-                {t('tpl.duplicate')}
-              </button>
-              <button
-                type="button"
-                className={`${action} border-danger text-danger`}
-                onClick={() => {
-                  if (window.confirm(t('tpl.deleteConfirm', { name: template.name }))) {
-                    remove.mutate(template.id)
-                  }
-                }}
-              >
-                {t('tpl.delete')}
-              </button>
-            </div>
+            {open === template.id && (
+              <div className="mt-3 border-t border-border pt-3">
+                <div className="flex flex-wrap gap-2">
+                  <Link
+                    to={`/workout/templates/${template.id}`}
+                    className={`${action} flex items-center`}
+                  >
+                    {t('tpl.edit')}
+                  </Link>
+                  <button
+                    type="button"
+                    className={action}
+                    onClick={() =>
+                      save.mutate({
+                        ...template,
+                        id: crypto.randomUUID(),
+                        name: `${template.name} (${t('tpl.copySuffix')})`.slice(0, 80),
+                        weekdays: [],
+                      })
+                    }
+                  >
+                    {t('tpl.duplicate')}
+                  </button>
+                  <button
+                    type="button"
+                    className={`${action} border-danger text-danger`}
+                    onClick={() => {
+                      if (window.confirm(t('tpl.deleteConfirm', { name: template.name }))) {
+                        remove.mutate(template.id)
+                      }
+                    }}
+                  >
+                    {t('tpl.delete')}
+                  </button>
+                </div>
+                <p className="mb-1.5 mt-3 text-xs text-muted">{t('tpl.weekdays')}</p>
+                <WeekdayPicker
+                  label={t('tpl.weekdays')}
+                  value={template.weekdays}
+                  onChange={(weekdays) => save.mutate({ ...template, weekdays })}
+                />
+              </div>
+            )}
           </Card>
         ))
       )}

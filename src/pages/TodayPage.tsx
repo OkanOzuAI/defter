@@ -1,11 +1,10 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import { useProfile } from '../auth/useProfile'
-import { Button, Card } from '../components/ui'
+import { Card } from '../components/ui'
 import { useLang, useT } from '../i18n'
 import { movingAverage7, sodiumMgToSaltG } from '../lib/calc'
-import { addDays, formatDate, today as todayDate, weekday } from '../lib/date'
+import { addDays, formatDate, today as todayDate } from '../lib/date'
 import { activePhase, dayTargets, phaseDay, supplementMacros } from '../lib/diet'
 import { formatNumber } from '../lib/number'
 import {
@@ -17,32 +16,21 @@ import {
   useTrainingDates,
 } from '../nutrition/hooks'
 import { SupplementLogger } from '../nutrition/SupplementLogger'
-import { CopyModeSheet } from '../workout/CopyModeSheet'
-import { newDraft } from '../workout/draft'
-import { startDraft, useDraft } from '../workout/draftStore'
-import type { TemplateRow } from '../workout/types'
-import { startFromTemplate, useTemplates } from '../workout/useTemplates'
+import { WorkoutStarter } from '../workout/WorkoutStarter'
 
 export function TodayPage() {
   const t = useT()
   const lang = useLang()
-  const navigate = useNavigate()
   const { user } = useAuth()
   const userId = user!.id
   const { data: profile } = useProfile()
   const today = todayDate()
-  const draft = useDraft(userId)
-  const [starting, setStarting] = useState<TemplateRow | null>(null)
 
   const phases = useDietPhases(userId).data ?? []
   const phase = activePhase(phases, today)
   const logs = useDailyLogs(userId, addDays(today, -6), today).data ?? []
   const log = logs.find((entry) => entry.date === today)
   const trainingDates = useTrainingDates(userId, today, today)
-  const templates = useTemplates(userId).data ?? []
-  // Every saved workout is offered; the ones the user put on this weekday come first.
-  const onToday = (template: TemplateRow) => (template.weekdays.includes(weekday(today)) ? 0 : 1)
-  const choices = [...templates].sort((x, y) => onToday(x) - onToday(y))
   const cardio = useCardioSessions(userId, today, today).data ?? []
   const extra = supplementMacros(
     useSupplementLogs(userId, today, today).data ?? [],
@@ -81,11 +69,6 @@ export function TodayPage() {
     </div>
   )
 
-  function startEmpty() {
-    startDraft(userId, newDraft(today))
-    navigate('/workout/active')
-  }
-
   return (
     <div className="space-y-4">
       <div>
@@ -99,59 +82,7 @@ export function TodayPage() {
         )}
       </div>
 
-      <Card>
-        <h2 className="mb-2 text-sm text-muted">
-          {t(draft ? 'workout.inProgress' : 'today.choose')}
-        </h2>
-        {draft ? (
-          <>
-            <p className="font-medium">{draft.name || t('workout.unnamed')}</p>
-            <Button block className="mt-3" onClick={() => navigate('/workout/active')}>
-              {t('workout.resume')}
-            </Button>
-          </>
-        ) : (
-          <>
-            {choices.length === 0 ? (
-              <p className="text-sm text-muted">{t('today.noSaved')}</p>
-            ) : (
-              <ul>
-                {choices.map((template) => (
-                  <li
-                    key={template.id}
-                    className="flex items-center justify-between gap-3 border-t border-border py-1.5 first:border-t-0"
-                  >
-                    <span className="min-w-0">
-                      <span className="block truncate font-medium">{template.name}</span>
-                      <span className="block text-xs text-muted">
-                        {t('workout.exercisesCount', { n: template.items.length })}
-                      </span>
-                    </span>
-                    <Button
-                      variant="secondary"
-                      className="shrink-0"
-                      onClick={() => setStarting(template)}
-                    >
-                      {t('tpl.start')}
-                    </Button>
-                  </li>
-                ))}
-              </ul>
-            )}
-            {trainingDates.has(today) && (
-              <p className="mt-1 text-xs text-accent">{t('today.done')}</p>
-            )}
-            <div className="mt-3 grid grid-cols-2 gap-2">
-              <Button variant="secondary" onClick={startEmpty}>
-                {t('workout.startEmpty')}
-              </Button>
-              <Button variant="ghost" onClick={() => navigate('/workout/templates')}>
-                {t('tpl.title')}
-              </Button>
-            </div>
-          </>
-        )}
-      </Card>
+      <WorkoutStarter userId={userId} title={t('today.choose')} />
 
       <Card>
         <div className="flex items-baseline justify-between gap-3">
@@ -212,16 +143,6 @@ export function TodayPage() {
         <h2 className="mb-1 font-medium">{t('sup.title')}</h2>
         <SupplementLogger userId={userId} date={today} />
       </Card>
-
-      {starting && (
-        <CopyModeSheet
-          onClose={() => setStarting(null)}
-          onChoose={async (mode) => {
-            await startFromTemplate(userId, starting, mode)
-            navigate('/workout/active')
-          }}
-        />
-      )}
     </div>
   )
 }

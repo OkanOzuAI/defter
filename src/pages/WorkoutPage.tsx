@@ -1,19 +1,18 @@
 import { useQuery } from '@tanstack/react-query'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { isNetworkError } from '../api/errors'
 import { listSessions } from '../api/workouts'
 import { useAuth } from '../auth/AuthContext'
-import { Button, Card, Message } from '../components/ui'
+import { Button, Message } from '../components/ui'
 import { useLang, useT } from '../i18n'
-import { formatDate, today } from '../lib/date'
-import { newDraft } from '../workout/draft'
-import { startDraft, useDraft } from '../workout/draftStore'
+import { formatDate } from '../lib/date'
+import { useDraft } from '../workout/draftStore'
 import { workoutKey } from '../workout/hooks'
+import { WorkoutStarter } from '../workout/WorkoutStarter'
 
 export function WorkoutPage() {
   const t = useT()
   const lang = useLang()
-  const navigate = useNavigate()
   const { user } = useAuth()
   const userId = user?.id
   const draft = useDraft(userId)
@@ -24,12 +23,6 @@ export function WorkoutPage() {
     enabled: Boolean(userId),
   })
 
-  function startEmpty() {
-    if (!userId) return
-    startDraft(userId, newDraft(today()))
-    navigate('/workout/active')
-  }
-
   // The session still being logged lives in the draft, not in the history list.
   const history = (sessions.data ?? []).filter((s) => s.id !== draft?.id || draft.editing)
 
@@ -37,41 +30,12 @@ export function WorkoutPage() {
     <div className="space-y-5">
       <h1 className="text-xl font-semibold">{t('nav.workout')}</h1>
 
-      {draft ? (
-        <Card>
-          <p className="text-sm text-muted">
-            {draft.editing ? t('workout.editTitle') : t('workout.inProgress')}
-          </p>
-          <p className="mt-0.5 truncate font-medium">
-            {draft.name || t('workout.unnamed')} · {formatDate(draft.date, lang)}
-          </p>
-          <Button block className="mt-3" onClick={() => navigate('/workout/active')}>
-            {t('workout.resume')}
-          </Button>
-        </Card>
-      ) : (
-        <Card>
-          <h2 className="mb-3 font-medium">{t('workout.start')}</h2>
-          <div className="space-y-2">
-            <Button block onClick={() => navigate('/workout/templates')}>
-              {t('tpl.startFrom')}
-            </Button>
-            <Button variant="secondary" block onClick={startEmpty}>
-              {t('workout.startEmpty')}
-            </Button>
-          </div>
-        </Card>
+      {userId && <WorkoutStarter userId={userId} title={t('today.choose')} />}
+      {draft && (
+        <Link to="/workout/templates" className="flex min-h-11 items-center text-sm text-accent">
+          {t('tpl.title')} ›
+        </Link>
       )}
-
-      <Link
-        to="/workout/templates"
-        className="flex min-h-12 items-center justify-between rounded-xl border border-border bg-surface px-4"
-      >
-        <span className="font-medium">{t('tpl.title')}</span>
-        <span className="text-muted" aria-hidden="true">
-          ›
-        </span>
-      </Link>
 
       <section>
         <h2 className="mb-1 font-medium">{t('workout.history')}</h2>

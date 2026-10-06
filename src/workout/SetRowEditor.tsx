@@ -16,6 +16,8 @@ type Props = {
   lastBest?: number
   bodyweight?: number
   display: IntensityDisplay
+  /** The next set to do: its RIR and failure controls are open without a tap. */
+  active?: boolean
   /** Editing a saved workout: rows hold stored values, there is nothing to complete. */
   planning?: boolean
   onChange: (fn: (set: DraftSet) => DraftSet) => void
@@ -39,6 +41,10 @@ export function SetRowEditor(props: Props) {
   const lang = useLang()
   const [open, setOpen] = useState(!set.done)
   const [showTechniques, setShowTechniques] = useState(false)
+  // null = follow `active`; a tap on the set number or an input overrides it.
+  const [details, setDetails] = useState<boolean | null>(null)
+  // A completed set that was reopened is being edited, so it shows everything too.
+  const showDetails = details ?? (Boolean(props.active) || set.done)
 
   const label = `${set.set_index + 1}${set.side ? ` ${t(`side.${set.side}`)}` : ''}`
   const weight = parseNumber(set.weight)
@@ -88,7 +94,16 @@ export function SetRowEditor(props: Props) {
   return (
     <div className="space-y-2 border-t border-border py-2.5">
       <div className="flex items-center gap-2">
-        <span className="w-10 shrink-0 text-sm text-muted">{label}</span>
+        <button
+          type="button"
+          aria-expanded={showDetails}
+          aria-label={`${label}: ${display === 'rpe' ? 'RPE' : 'RIR'}`}
+          onClick={() => setDetails(!showDetails)}
+          className="min-h-12 w-10 shrink-0 text-left text-sm text-muted"
+        >
+          {label}
+          <span className="block text-[10px] leading-none">{showDetails ? '▴' : '▾'}</span>
+        </button>
 
         {/* The native select sits invisibly on top of the short label: one tap, no dialog. */}
         <span className="relative flex size-12 shrink-0 items-center justify-center rounded-lg border border-border text-sm">
@@ -117,6 +132,7 @@ export function SetRowEditor(props: Props) {
           }
           value={set.weight}
           onChange={(e) => onChange((s) => ({ ...s, weight: e.target.value }))}
+          onFocus={() => setDetails(true)}
           className={input}
         />
         <span className="text-muted">×</span>
@@ -128,6 +144,7 @@ export function SetRowEditor(props: Props) {
           placeholder={placeholder?.reps != null ? String(placeholder.reps) : t('set.reps')}
           value={set.reps}
           onChange={(e) => onChange((s) => ({ ...s, reps: e.target.value }))}
+          onFocus={() => setDetails(true)}
           className={input}
         />
         {!planning && (
@@ -151,86 +168,93 @@ export function SetRowEditor(props: Props) {
         )}
       </div>
 
-      <div className="flex items-center gap-2">
-        <button
-          type="button"
-          onClick={props.onGlossary}
-          aria-label={t('set.glossary')}
-          className="flex min-h-11 w-10 shrink-0 items-center gap-1 text-sm text-muted"
-        >
-          {display === 'rpe' ? 'RPE' : 'RIR'}
-          <span className="flex size-4 items-center justify-center rounded-full border border-muted text-[10px]">
-            i
-          </span>
-        </button>
-        <div className="flex flex-1 overflow-hidden rounded-lg border border-border">
-          {RIR_VALUES.map((rir) => (
+      {!showDetails && (set.rir !== null || set.failure !== 'none') && (
+        <p className="pl-12 text-xs text-muted">{intensityText(set, display, t)}</p>
+      )}
+      {showDetails && (
+        <>
+          <div className="flex items-center gap-2">
             <button
-              key={rir}
               type="button"
-              aria-pressed={set.rir === rir}
-              onClick={() => onChange((s) => withRir(s, rir))}
-              className={
-                'min-h-11 flex-1 border-l border-border text-sm first:border-l-0 ' +
-                (set.rir === rir ? 'bg-accent font-semibold text-accent-fg' : 'text-text')
-              }
+              onClick={props.onGlossary}
+              aria-label={t('set.glossary')}
+              className="flex min-h-11 w-10 shrink-0 items-center gap-1 text-sm text-muted"
             >
-              {display === 'rpe' ? (rir === 5 ? '≤5' : rirToRpe(rir)) : rir === 5 ? '5+' : rir}
+              {display === 'rpe' ? 'RPE' : 'RIR'}
+              <span className="flex size-4 items-center justify-center rounded-full border border-muted text-[10px]">
+                i
+              </span>
             </button>
-          ))}
-        </div>
-      </div>
+            <div className="flex flex-1 overflow-hidden rounded-lg border border-border">
+              {RIR_VALUES.map((rir) => (
+                <button
+                  key={rir}
+                  type="button"
+                  aria-pressed={set.rir === rir}
+                  onClick={() => onChange((s) => withRir(s, rir))}
+                  className={
+                    'min-h-11 flex-1 border-l border-border text-sm first:border-l-0 ' +
+                    (set.rir === rir ? 'bg-accent font-semibold text-accent-fg' : 'text-text')
+                  }
+                >
+                  {display === 'rpe' ? (rir === 5 ? '≤5' : rirToRpe(rir)) : rir === 5 ? '5+' : rir}
+                </button>
+              ))}
+            </div>
+          </div>
 
-      <div className="flex items-center gap-2">
-        <button
-          type="button"
-          aria-pressed={set.failure === 'near'}
-          onClick={() => onChange((s) => withFailure(s, 'near'))}
-          className={`${chip(set.failure === 'near')} flex-1`}
-        >
-          {t('set.near')}
-        </button>
-        <button
-          type="button"
-          aria-pressed={set.failure === 'failure'}
-          onClick={() => onChange((s) => withFailure(s, 'failure'))}
-          className={`${chip(set.failure === 'failure')} flex-1`}
-        >
-          {t('set.failure')}
-        </button>
-        <button
-          type="button"
-          aria-expanded={showTechniques}
-          onClick={() => setShowTechniques((value) => !value)}
-          className={chip(set.techniques.length > 0)}
-        >
-          {t('set.techniques')}
-          {set.techniques.length > 0 && ` ${set.techniques.length}`}
-        </button>
-        <button
-          type="button"
-          aria-label={t('set.delete')}
-          onClick={props.onRemove}
-          className="min-h-11 w-10 shrink-0 text-lg text-muted"
-        >
-          ✕
-        </button>
-      </div>
-
-      {showTechniques && (
-        <div className="flex flex-wrap gap-2">
-          {TECHNIQUES.map((technique) => (
+          <div className="flex items-center gap-2">
             <button
-              key={technique}
               type="button"
-              aria-pressed={set.techniques.includes(technique)}
-              onClick={() => onChange((s) => withTechnique(s, technique))}
-              className={chip(set.techniques.includes(technique))}
+              aria-pressed={set.failure === 'near'}
+              onClick={() => onChange((s) => withFailure(s, 'near'))}
+              className={`${chip(set.failure === 'near')} flex-1`}
             >
-              {t(`tech.${technique}`)}
+              {t('set.near')}
             </button>
-          ))}
-        </div>
+            <button
+              type="button"
+              aria-pressed={set.failure === 'failure'}
+              onClick={() => onChange((s) => withFailure(s, 'failure'))}
+              className={`${chip(set.failure === 'failure')} flex-1`}
+            >
+              {t('set.failure')}
+            </button>
+            <button
+              type="button"
+              aria-expanded={showTechniques}
+              onClick={() => setShowTechniques((value) => !value)}
+              className={chip(set.techniques.length > 0)}
+            >
+              {t('set.techniques')}
+              {set.techniques.length > 0 && ` ${set.techniques.length}`}
+            </button>
+            <button
+              type="button"
+              aria-label={t('set.delete')}
+              onClick={props.onRemove}
+              className="min-h-11 w-10 shrink-0 text-lg text-muted"
+            >
+              ✕
+            </button>
+          </div>
+
+          {showTechniques && (
+            <div className="flex flex-wrap gap-2">
+              {TECHNIQUES.map((technique) => (
+                <button
+                  key={technique}
+                  type="button"
+                  aria-pressed={set.techniques.includes(technique)}
+                  onClick={() => onChange((s) => withTechnique(s, technique))}
+                  className={chip(set.techniques.includes(technique))}
+                >
+                  {t(`tech.${technique}`)}
+                </button>
+              ))}
+            </div>
+          )}
+        </>
       )}
     </div>
   )

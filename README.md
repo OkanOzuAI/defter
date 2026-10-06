@@ -261,6 +261,11 @@ scripts/rls-check.ts                cross-user isolation check
   planned one. Suggested workouts are added without weekdays. The weekday toggles on a saved
   workout remain as the user's own optional note; a workout the user put on today is only listed
   first.
+- **Less to tap in the workout section** (changed after first use): one "start" card on Bugün and
+  Antrenman lists the saved workouts and, when a workout is in progress, offers Continue and
+  Delete. In a session only the next set shows its RIR and failure controls; other open sets are
+  one line and open on focus or by tapping the set number. Saved-workout cards show Start, with
+  edit / duplicate / delete / days behind "⋯".
 
 ## Roadmap (not built)
 

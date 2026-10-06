@@ -63,6 +63,8 @@ export function ExerciseCard(props: Props) {
   const sets = orderedSets(item)
   const lastWorking = lastSets.filter((row) => row.set_type !== 'warmup')
   const lastBest = bestE1rm(lastSets, exercise, bodyweight)
+  // Only the next set to do shows its RIR / failure controls; the rest stay one line tall.
+  const nextId = sets.find((set) => !set.done)?.id
 
   /** Greyed-out values for an empty row: the left side just logged, else the user's earlier values. */
   function placeholderFor(set: DraftSet) {
@@ -206,6 +208,7 @@ export function ExerciseCard(props: Props) {
             bodyweight={bodyweight}
             display={display}
             planning={planning}
+            active={set.id === nextId}
             onChange={(fn) => apply((d) => updateSet(d, key, set.id, fn))}
             onDone={() => complete(set)}
             onRemove={() => apply((d) => removeSet(d, key, set.id))}

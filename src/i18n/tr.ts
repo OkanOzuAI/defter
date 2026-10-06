@@ -149,10 +149,11 @@ export const tr = {
   'muscle.abs': 'Karın',
   'muscle.obliques': 'Yan karın',
 
-  'workout.start': 'Antrenman başlat',
   'workout.startEmpty': 'Boş antrenman',
   'workout.inProgress': 'Devam eden antrenman',
   'workout.resume': 'Devam et',
+  'workout.setsDone': '{done} / {total} set tamam',
+  'tpl.manage': 'Düzenle / yeni ekle',
   'workout.history': 'Geçmiş',
   'workout.historyEmpty':
     'Henüz kayıtlı antrenman yok. İlk antrenmanını başlat; bitirince burada görünür.',
@@ -292,7 +293,6 @@ export const tr = {
   'glossary.superset.d': 'İki hareketin arada dinlenmeden art arda yapılması (A1, A2).',
 
   'tpl.title': 'Kayıtlı antrenmanlarım',
-  'tpl.startFrom': 'Kayıtlı antrenmandan başla',
   'tpl.empty':
     'Henüz kayıtlı antrenmanın yok. Bir antrenmanı bitirdiğinde "Kayıtlı antrenman olarak kaydet" ile ekleyebilir ya da buradan yenisini oluşturabilirsin.',
   'tpl.new': 'Yeni kayıtlı antrenman',

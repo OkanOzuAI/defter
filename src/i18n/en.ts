@@ -152,10 +152,11 @@ export const en: Dict = {
   'muscle.abs': 'Abs',
   'muscle.obliques': 'Obliques',
 
-  'workout.start': 'Start a workout',
   'workout.startEmpty': 'Empty workout',
   'workout.inProgress': 'Workout in progress',
   'workout.resume': 'Continue',
+  'workout.setsDone': '{done} / {total} sets done',
+  'tpl.manage': 'Edit / add new',
   'workout.history': 'History',
   'workout.historyEmpty':
     'No saved workouts yet. Start your first one; it shows up here when you finish.',
@@ -295,7 +296,6 @@ export const en: Dict = {
   'glossary.superset.d': 'Two exercises done back to back without rest in between (A1, A2).',
 
   'tpl.title': 'Saved workouts',
-  'tpl.startFrom': 'Start from a saved workout',
   'tpl.empty':
     'No saved workouts yet. When you finish a workout you can add it with "Save as saved workout", or create one here.',
   'tpl.new': 'New saved workout',
